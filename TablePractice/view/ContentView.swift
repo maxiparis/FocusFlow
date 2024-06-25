@@ -8,25 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showingSheet = false
+    @State private var displayAddSheet = false
+    @State private var displayTimerView = false
     @State private var selectedTask: Task? = nil
     
     @StateObject private var contentVM = ContentViewModel()
-    
     var body: some View {
         NavigationStack {
             List($contentVM.elements, id: \.self, editActions: .all) { element in
                 Button(action: {
                     selectedTask = element.wrappedValue
-                    showingSheet = true
+                    displayAddSheet = true
                 }) {
                     Text("\(element.title.wrappedValue) - \(element.wrappedValue.generateTimerText())")
                 }
                 .tint(Color.black) //TODO: fix color to match dark mode as well
             }
-            //                .listStyle(.plain)
-            .sheet(isPresented: $showingSheet, content: {
-                AddView(selectedTask: selectedTask, isPresented: $showingSheet, contentVM: contentVM)
+            .sheet(isPresented: $displayAddSheet, content: {
+                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
             })
             .toolbar {
                 //Edit
@@ -34,13 +33,12 @@ struct ContentView: View {
                     EditButton()
                 }
                 
-                
                 //Add
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         print("Add tapped")
                         selectedTask = nil
-                        showingSheet = true
+                        displayAddSheet = true
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -48,20 +46,24 @@ struct ContentView: View {
                 
                 //Start Routine
                 ToolbarItem(placement: .bottomBar){
-                    Button{
+                    Button {
+                        displayTimerView.toggle()
                         print("Start tapped")
                     } label: {
                         Text("Start Routine")
+                            .font(.callout)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
                     }
-                    .padding(15)
-                    .background() {
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundStyle(Color.green)
-                    }
-                    .foregroundStyle(Color.white)
+                    .buttonStyle(BorderedProminentButtonStyle())
+                    .tint(Color.green)
+                    .disabled(contentVM.elements.isEmpty)
                 }
             }
             .navigationTitle("Routine")
+            .navigationDestination(isPresented: $displayTimerView) {
+                TimerView(timerVM: TimerViewModel(tasks: contentVM.elements))
+            }
         }
         
     }

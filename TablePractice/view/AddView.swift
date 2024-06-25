@@ -49,6 +49,7 @@ struct AddView: View {
                     Spacer()
                     
                     TextField("Enter name of activity", text: $activityName)
+                        .font(.title3)
                         .frame(height: 20)
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.center)
@@ -58,7 +59,7 @@ struct AddView: View {
                     HStack {
                         //Hours
                         VStack {
-                            Text("Hours")
+                            Text("Hours").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedHour) {
                                 ForEach(contentVM.hours.indices) {
@@ -72,7 +73,7 @@ struct AddView: View {
                         
                         //Minutes
                         VStack {
-                            Text("Minutes")
+                            Text("Minutes").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedMinute) {
                                 ForEach(contentVM.minutes.indices) {
@@ -86,7 +87,7 @@ struct AddView: View {
                     }
                     
                     Spacer()
-                    Button("Submit") {
+                    Button {
                         if let task = selectedTask,
                            let index = contentVM.elements.firstIndex(of: task) {
                             contentVM.elements[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
@@ -94,6 +95,10 @@ struct AddView: View {
                             contentVM.elements.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
                         }
                         self.isPresented = false
+                    } label: {
+                        Text("Save").font(.title3)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
                     }
                     .disabled(activityName == "" || (selectedHour == 0 && selectedMinute == 0))
                     .buttonStyle(.bordered)

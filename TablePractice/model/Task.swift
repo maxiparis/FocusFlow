@@ -23,8 +23,8 @@ struct Task: Hashable, Equatable {
     }
     
     func generateTimerText() -> String {
-        var hoursText = timer.hours < 10 ? "0\(timer.hours.description)" : timer.hours.description
-        var minutesText = timer.minute < 10 ? "0\(timer.minute.description)" : timer.minute.description
+        let hoursText = timer.hours < 10 ? "0\(timer.hours.description)" : timer.hours.description
+        let minutesText = timer.minute < 10 ? "0\(timer.minute.description)" : timer.minute.description
         return hoursText + ":" + minutesText
     }
 }
