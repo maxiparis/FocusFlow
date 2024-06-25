@@ -8,11 +8,36 @@
 import SwiftUI
 
 struct AddView: View {
-    @State private var activityName: String = ""
-    @State private var selectedHour: Int = 0
-    @State private var selectedMinute: Int = 0
+    
+    private var selectedTask: Task?
+    @State private var editButtonPressed: Bool = false
+    @State private var editable: Bool
+    @State private var shouldDisplayEditButton: Bool
+    
+    @State private var activityName: String
+    @State private var selectedHour: Int
+    @State private var selectedMinute: Int
+    
     @Binding var isPresented: Bool
-    @StateObject var contentVM: ContentViewModel
+    @ObservedObject var contentVM: ContentViewModel
+    
+    init(selectedTask: Task?, isPresented: Binding<Bool>, editable: Bool, contentVM: ContentViewModel) {
+        self.selectedTask = selectedTask
+        self._isPresented = isPresented
+        self._editable = State(initialValue: editable)
+        self._shouldDisplayEditButton = State(initialValue: !editable)
+        self.contentVM = contentVM
+        
+        if let task = selectedTask {
+            activityName = task.title
+            selectedHour = task.timer.hours
+            selectedMinute = task.timer.minute
+        } else {
+            activityName = ""
+            selectedHour = 0
+            selectedMinute = 0
+        }
+    }
     
     var body: some View {
         GeometryReader() { g in
@@ -24,6 +49,7 @@ struct AddView: View {
                     TextField("Enter name of activity", text: $activityName)
                         .frame(height: 20)
                         .textFieldStyle(.roundedBorder)
+                        .disabled(!editable)
                     
                     Spacer()
                     
@@ -38,13 +64,14 @@ struct AddView: View {
                                         .tag($0)
                                 }
                             }
+                                   .disabled(!editable)
                                    .pickerStyle(.wheel)
                                    .frame(width: g.size.width / 3, height: g.size.height / 4)
                         }
-                                                
+                        
                         //Minutes
                         VStack {
-                            Text("Minutes")
+                             Text("Minutes")
                             Picker("Flavor",
                                    selection: $selectedMinute) {
                                 ForEach(contentVM.minutes.indices) {
@@ -52,22 +79,26 @@ struct AddView: View {
                                         .tag($0)
                                 }
                             }
+                                   .disabled(!editable)
                                    .pickerStyle(.wheel)
                                    .frame(width: g.size.width / 3, height: g.size.height / 4)
-
                         }
                     }
                     
-                    Spacer()
-                    
-                    Button("Submit") {
-                        if (activityName != "") {
-                            contentVM.elements.append(activityName)
-                            self.isPresented = false //Dismiss self view
+                    if (editable) {
+                        Spacer()
+                        Button("Submit") {
+                            if let task = selectedTask,
+                               let index = contentVM.elements.firstIndex(of: task) {
+                                contentVM.elements[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
+                            } else {
+                                contentVM.elements.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
+                            }
+                            self.isPresented = false
                         }
+                        .disabled(activityName == "" || (selectedHour == 0 && selectedMinute == 0))
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
-                    
                     Spacer()
                 }
                 .frame(width: g.size.width * 0.9)
@@ -75,12 +106,26 @@ struct AddView: View {
                 Spacer()
             }
         }
+        .toolbar {
+            if (shouldDisplayEditButton) {
+                Button {
+                    editButtonPressed.toggle()
+                    editable.toggle()
+                } label: {
+                    editButtonPressed ? Text("Cancel") : Text("Edit")
+                }
+            }
+        }
     }
 }
 
-#Preview {
-    AddView(isPresented: .constant(true), contentVM: ContentViewModel())
+//#Preview {
+//    AddView(isPresented: .constant(true), contentVM: ContentViewModel())
+//}
+
+
+extension UIPickerView {
+    open override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIView.noIntrinsicMetric, height: super.intrinsicContentSize.height)
+    }
 }
-
-
-extension UIPickerView {   open override var intrinsicContentSize: CGSize {     return CGSize(width: UIView.noIntrinsicMetric, height: super.intrinsicContentSize.height)   } }
