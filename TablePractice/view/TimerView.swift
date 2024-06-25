@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct TimerView: View {
-    var timerVM: TimerViewModel
-    
+    @StateObject var timerVM: TimerViewModel
     
     var body: some View {
         VStack(spacing: 120) {
-            if let currentTask = timerVM.currentTask {
+            if let currentTaskIndex = timerVM.currentTaskIndex {
                 Spacer()
                 
-                Text(currentTask.title).font(.largeTitle)
+                Text(timerVM.tasks[currentTaskIndex].title).font(.largeTitle)
                 
-                Text("00:00").font(.largeTitle)
+                Text(timerVM.countdownString)
+                    .font(.largeTitle)
                 
                 HStack {
                     Spacer()
@@ -35,6 +35,8 @@ struct TimerView: View {
                 
                 Spacer()
             }
+        }.onAppear() {
+            timerVM.startTimer()
         }
     }
 }

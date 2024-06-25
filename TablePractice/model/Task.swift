@@ -32,4 +32,11 @@ struct Task: Hashable, Equatable {
 struct Time {
     var hours: Int
     var minute: Int
+    var remainingTimeInSecs: Int
+    
+    init(hours: Int, minute: Int) {
+        self.hours = hours
+        self.minute = minute
+        self.remainingTimeInSecs = (hours * 60 * 60) + (minute * 60)
+    }
 }
