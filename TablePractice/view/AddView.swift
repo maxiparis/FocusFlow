@@ -10,9 +10,6 @@ import SwiftUI
 struct AddView: View {
     
     private var selectedTask: Task?
-    @State private var editButtonPressed: Bool = false
-    @State private var editable: Bool
-    @State private var shouldDisplayEditButton: Bool
     
     @State private var activityName: String
     @State private var selectedHour: Int
@@ -21,11 +18,9 @@ struct AddView: View {
     @Binding var isPresented: Bool
     @ObservedObject var contentVM: ContentViewModel
     
-    init(selectedTask: Task?, isPresented: Binding<Bool>, editable: Bool, contentVM: ContentViewModel) {
+    init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: ContentViewModel) {
         self.selectedTask = selectedTask
         self._isPresented = isPresented
-        self._editable = State(initialValue: editable)
-        self._shouldDisplayEditButton = State(initialValue: !editable)
         self.contentVM = contentVM
         
         if let task = selectedTask {
@@ -44,12 +39,19 @@ struct AddView: View {
             HStack {
                 Spacer()
                 VStack(alignment: .center) {
+                    HStack {
+                        Button("Cancel") {
+                            self.isPresented = false
+                        }
+                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                        Spacer()
+                    }
                     Spacer()
                     
                     TextField("Enter name of activity", text: $activityName)
                         .frame(height: 20)
                         .textFieldStyle(.roundedBorder)
-                        .disabled(!editable)
+                        .multilineTextAlignment(.center)
                     
                     Spacer()
                     
@@ -64,14 +66,13 @@ struct AddView: View {
                                         .tag($0)
                                 }
                             }
-                                   .disabled(!editable)
                                    .pickerStyle(.wheel)
                                    .frame(width: g.size.width / 3, height: g.size.height / 4)
                         }
                         
                         //Minutes
                         VStack {
-                             Text("Minutes")
+                            Text("Minutes")
                             Picker("Flavor",
                                    selection: $selectedMinute) {
                                 ForEach(contentVM.minutes.indices) {
@@ -79,41 +80,28 @@ struct AddView: View {
                                         .tag($0)
                                 }
                             }
-                                   .disabled(!editable)
                                    .pickerStyle(.wheel)
                                    .frame(width: g.size.width / 3, height: g.size.height / 4)
                         }
                     }
                     
-                    if (editable) {
-                        Spacer()
-                        Button("Submit") {
-                            if let task = selectedTask,
-                               let index = contentVM.elements.firstIndex(of: task) {
-                                contentVM.elements[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
-                            } else {
-                                contentVM.elements.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
-                            }
-                            self.isPresented = false
+                    Spacer()
+                    Button("Submit") {
+                        if let task = selectedTask,
+                           let index = contentVM.elements.firstIndex(of: task) {
+                            contentVM.elements[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
+                        } else {
+                            contentVM.elements.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
                         }
-                        .disabled(activityName == "" || (selectedHour == 0 && selectedMinute == 0))
-                        .buttonStyle(.bordered)
+                        self.isPresented = false
                     }
+                    .disabled(activityName == "" || (selectedHour == 0 && selectedMinute == 0))
+                    .buttonStyle(.bordered)
                     Spacer()
                 }
                 .frame(width: g.size.width * 0.9)
                 
                 Spacer()
-            }
-        }
-        .toolbar {
-            if (shouldDisplayEditButton) {
-                Button {
-                    editButtonPressed.toggle()
-                    editable.toggle()
-                } label: {
-                    editButtonPressed ? Text("Cancel") : Text("Edit")
-                }
             }
         }
     }

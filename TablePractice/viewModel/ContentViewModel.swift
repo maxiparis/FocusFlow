@@ -23,6 +23,20 @@ class ContentViewModel: ObservableObject {
             [Task(title: "Eat", timer: Time(hours: 0, minute: 30)),
             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
+//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
+//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
             Task(title: "Make Dinner", timer: Time(hours: 0, minute: 45))]
         
         self.hours = [0,1,2,3,4,5,6,7,8,9,10,11,12]

@@ -22,36 +22,48 @@ struct ContentView: View {
                 }) {
                     Text("\(element.title.wrappedValue) - \(element.wrappedValue.generateTimerText())")
                 }
-                .tint(Color.black)
+                .tint(Color.black) //TODO: fix color to match dark mode as well
             }
-            .listStyle(.automatic)
-            .navigationTitle("Routine")
+            //                .listStyle(.plain)
+            .sheet(isPresented: $showingSheet, content: {
+                AddView(selectedTask: selectedTask, isPresented: $showingSheet, contentVM: contentVM)
+            })
             .toolbar {
-                EditButton()
-                Button {
-                    print("Add tapped")
-                    selectedTask = nil
-                    showingSheet = true
-                } label: {
-                    Image(systemName: "plus")
+                //Edit
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
                 }
                 
+                
+                //Add
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        print("Add tapped")
+                        selectedTask = nil
+                        showingSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+                
+                //Start Routine
+                ToolbarItem(placement: .bottomBar){
+                    Button{
+                        print("Start tapped")
+                    } label: {
+                        Text("Start Routine")
+                    }
+                    .padding(15)
+                    .background() {
+                        RoundedRectangle(cornerRadius: 20)
+                            .foregroundStyle(Color.green)
+                    }
+                    .foregroundStyle(Color.white)
+                }
             }
-            .sheet(isPresented: $showingSheet, content: {
-                AddView(selectedTask: selectedTask, isPresented: $showingSheet, editable: true, contentVM: contentVM)
-            })
-            
-            
-            Button("Start routine") {
-                print("Start tapped")
-            }
-            .padding(15)
-            .background() {
-                RoundedRectangle(cornerRadius: 10)
-                    .foregroundStyle(Color.green)
-            }
-            .foregroundStyle(Color.white)
+            .navigationTitle("Routine")
         }
+        
     }
 }
 
