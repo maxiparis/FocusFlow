@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Task: Hashable, Equatable {
+struct Task: Hashable, Equatable, Decodable, Encodable {
     
     var title: String
     var timer: Time
@@ -29,7 +29,7 @@ struct Task: Hashable, Equatable {
     }
 }
 
-struct Time {
+struct Time: Decodable, Encodable {
     var hours: Int
     var minute: Int
     var remainingTimeInSecs: Int

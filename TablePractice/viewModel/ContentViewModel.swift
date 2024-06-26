@@ -8,42 +8,48 @@
 import Foundation
 import Observation
 
+private let TASKS_KEY = "tasksArrayKey"
+
 class ContentViewModel: ObservableObject {
-    @Published var elements: [Task] {
+    
+    private var defaults = UserDefaults.standard
+    @Published var tasks: [Task] {
         didSet {
-            print(elements)
+            print(tasks)
+            saveTasks() //Every time tasks is updated (deleting or updating a task) the tasks array is saved to the defaults
         }
     }
     
-    @Published var hours: [Int]
-    @Published var minutes: [Int]
+    var hours: [Int]
+    var minutes: [Int]
     
     init() {
-        self.elements = 
-            [Task(title: "Eat", timer: Time(hours: 0, minute: 30)),
-            Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-            Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-//             Task(title: "Run", timer: Time(hours: 0, minute: 35)),
-//             Task(title: "Do Homework", timer: Time(hours: 2, minute: 15)),
-            Task(title: "Make Dinner", timer: Time(hours: 0, minute: 45))]
-        
         self.hours = [0,1,2,3,4,5,6,7,8,9,10,11,12]
         self.minutes = []
         
         for number in 0...59 {
             self.minutes.append(number)
         }
+        
+        self.tasks = []
+        loadTasks()
     }
+    
+    func addTask(_ task: Task) {
+            tasks.append(task)
+            saveTasks()
+        }
+        
+        private func saveTasks() {
+            if let encodedData = try? JSONEncoder().encode(tasks) {
+                defaults.set(encodedData, forKey: TASKS_KEY)
+            }
+        }
+        
+        private func loadTasks() {
+            if let tasksData = defaults.data(forKey: TASKS_KEY),
+               let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
+                self.tasks = decodedTasks
+            }
+        }
 }

@@ -15,14 +15,14 @@ struct ContentView: View {
     @StateObject private var contentVM = ContentViewModel()
     var body: some View {
         NavigationStack {
-            List($contentVM.elements, id: \.self, editActions: .all) { element in
+            List($contentVM.tasks, id: \.self, editActions: .all) { task in
                 Button(action: {
-                    selectedTask = element.wrappedValue
+                    selectedTask = task.wrappedValue
                     displayAddSheet = true
                 }) {
-                    Text("\(element.title.wrappedValue) - \(element.wrappedValue.generateTimerText())")
+                    Text("\(task.title.wrappedValue) - \(task.wrappedValue.generateTimerText())")
                 }
-                .tint(Color.black) //TODO: fix color to match dark mode as well
+                .tint(Color.primary) //TODO: fix color to match dark mode as well
             }
             .sheet(isPresented: $displayAddSheet, content: {
                 AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
@@ -57,12 +57,12 @@ struct ContentView: View {
                     }
                     .buttonStyle(BorderedProminentButtonStyle())
                     .tint(Color.green)
-                    .disabled(contentVM.elements.isEmpty)
+                    .disabled(contentVM.tasks.isEmpty)
                 }
             }
             .navigationTitle("Routine")
             .navigationDestination(isPresented: $displayTimerView) {
-                TimerView(timerVM: TimerViewModel(tasks: contentVM.elements))
+                TimerView(timerVM: TimerViewModel(tasks: contentVM.tasks))
             }
         }
         

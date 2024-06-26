@@ -89,10 +89,10 @@ struct AddView: View {
                     Spacer()
                     Button {
                         if let task = selectedTask,
-                           let index = contentVM.elements.firstIndex(of: task) {
-                            contentVM.elements[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
+                           let index = contentVM.tasks.firstIndex(of: task) {
+                            contentVM.tasks[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
                         } else {
-                            contentVM.elements.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
+                            contentVM.tasks.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
                         }
                         self.isPresented = false
                     } label: {
