@@ -15,14 +15,33 @@ struct ContentView: View {
     @StateObject private var contentVM = ContentViewModel()
     var body: some View {
         NavigationStack {
+//            List {
+//                ForEach(contentVM.tasks.indices, id: \.self) { index in
+//                    let task = contentVM.tasks[index]
+//                    
+//                    Button(action: {
+//                        testFunc(index: index)
+//                    }) {
+//                        Text("\(task.title)")
+//                            .foregroundColor(Color.primary) // Adjust text color for dark mode
+//                    }
+//                    .buttonStyle(.plain)
+//                }
+//            }
             List($contentVM.tasks, id: \.self, editActions: .all) { task in
-                Button(action: {
-                    selectedTask = task.wrappedValue
-                    displayAddSheet = true
-                }) {
-                    Text("\(task.title.wrappedValue) - \(task.wrappedValue.generateTimerText())")
+//                Button(action: {
+//                    selectedTask = task.wrappedValue
+//                    displayAddSheet = true
+//                }) {
+//                    Text("\(task.title.wrappedValue) - \(task.wrappedValue.generateTimerText())")
+//                }
+//                .tint(Color.primary) //TODO: fix color to match dark mode as well
+                NavigationLink {
+                    AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM)
+                } label: {
+                    Text("\(task.wrappedValue.title)")
                 }
-                .tint(Color.primary) //TODO: fix color to match dark mode as well
+
             }
             .sheet(isPresented: $displayAddSheet, content: {
                 AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
@@ -69,6 +88,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}

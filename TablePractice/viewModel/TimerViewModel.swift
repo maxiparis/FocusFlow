@@ -29,7 +29,7 @@ class TimerViewModel: ObservableObject {
     
     func startTimer() {
         self.generateCountdownString()
-        _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+        _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if var index = self.currentTaskIndex {
                 if self.tasks[index].timer.remainingTimeInSecs > 0 {
                     self.tasks[index].timer.remainingTimeInSecs -= 1
