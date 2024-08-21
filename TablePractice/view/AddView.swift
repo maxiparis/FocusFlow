@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AddView: View {
-    
+    @Environment(\.dismiss) var dismiss
+
     private var selectedTask: Task?
     
     @State private var activityName: String
@@ -95,6 +96,9 @@ struct AddView: View {
                             contentVM.tasks.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
                         }
                         self.isPresented = false
+                        dismiss()
+                        // TODO: dismiss view here??
+                        
                     } label: {
                         Text("Save").font(.title3)
                             .padding(.horizontal, 20)
