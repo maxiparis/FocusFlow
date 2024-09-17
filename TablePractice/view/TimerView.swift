@@ -25,7 +25,7 @@ struct TimerView: View {
                     Button {
                         print("button tapped")
                     } label: {
-                        Text("Button")
+                        Text("Pause")
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                     }
