@@ -17,6 +17,7 @@ class TimerViewModel: ObservableObject {
     @Published var tasks: [Task]
     @Published var currentTaskIndex: Int?
     @Published var countdownString: String = ""
+    var timer: Timer = Timer()
     
     init(tasks: [Task]) {
         self.tasks = tasks
@@ -29,7 +30,7 @@ class TimerViewModel: ObservableObject {
     
     func startTimer() {
         self.generateCountdownString()
-        _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if var index = self.currentTaskIndex {
                 if self.tasks[index].timer.remainingTimeInSecs > 0 {
                     self.tasks[index].timer.remainingTimeInSecs -= 1
@@ -44,6 +45,10 @@ class TimerViewModel: ObservableObject {
             }
         }
         
+    }
+    
+    func pauseTimer() {
+        timer.invalidate()
     }
     
     func generateCountdownString() {

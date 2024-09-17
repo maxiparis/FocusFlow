@@ -23,6 +23,7 @@ struct TimerView: View {
                 HStack {
                     Spacer()
                     Button {
+                        timerVM.pauseTimer()
                         print("button tapped")
                     } label: {
                         Text("Pause")
