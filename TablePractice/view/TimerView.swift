@@ -41,7 +41,10 @@ struct TimerView: View {
     }
 }
 
-//
-//#Preview {
-//    TimerView()
-//}
+
+#Preview {
+    var task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
+    var taskList = [task]
+    
+    TimerView(timerVM: TimerViewModel(tasks: taskList))
+}
