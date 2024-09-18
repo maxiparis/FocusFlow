@@ -20,19 +20,46 @@ struct TimerView: View {
                 Text(timerVM.countdownString)
                     .font(.largeTitle)
                 
-                HStack {
-                    Spacer()
+                HStack(spacing: 20) {
                     Button {
-                        timerVM.pauseTimer()
-                        print("button tapped")
+                        //TODO
                     } label: {
-                        Text("Pause")
+                        Text("Add time")
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
+                    }.buttonStyle(BorderedButtonStyle())
+
+                    Button {
+                        if (timerVM.timerPaused) {
+                            timerVM.startTimer()
+                        } else {
+                            timerVM.pauseTimer()
+                        }
+                        print("button tapped")
+                    } label: {
+                        if (timerVM.timerPaused) {
+                            Text("Continue")
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                        } else {
+                            Text("Pause")
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                        }
                     }
                     .buttonStyle(BorderedButtonStyle())
-                    Spacer()
+                    
+                    Button {
+                        //TODO
+                    } label: {
+                        Text("Done")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                    }.buttonStyle(BorderedButtonStyle())
                 }
+                
+                Text("Next Actity: ")
+                Text("Time you will be done: ")
                 
                 Spacer()
             }
