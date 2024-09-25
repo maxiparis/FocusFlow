@@ -107,7 +107,7 @@
 		76B95A302C26203F0052EA05 = {
 			isa = PBXGroup;
 			children = (
-				76B95A3B2C26203F0052EA05 /* TablePractice */,
+				76B95A3B2C26203F0052EA05 /* FocusFlow */,
 				76B95A3A2C26203F0052EA05 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,7 +122,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		76B95A3B2C26203F0052EA05 /* TablePractice */ = {
+		76B95A3B2C26203F0052EA05 /* FocusFlow */ = {
 			isa = PBXGroup;
 			children = (
 				7635C1222C29BE0800789148 /* viewModel */,
@@ -132,7 +132,7 @@
 				76B95A422C2620400052EA05 /* TablePractice.entitlements */,
 				76B95A432C2620400052EA05 /* Preview Content */,
 			);
-			path = TablePractice;
+			path = FocusFlow;
 			sourceTree = "<group>";
 		};
 		76B95A432C2620400052EA05 /* Preview Content */ = {
@@ -207,7 +207,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					76B95A382C26203F0052EA05 = {
 						CreatedOnToolsVersion = 15.4;
@@ -347,6 +347,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -408,6 +409,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -435,6 +437,7 @@
 				CODE_SIGN_ENTITLEMENTS = TablePractice/TablePractice.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TablePractice/Preview Content\"";
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -473,6 +476,7 @@
 				CODE_SIGN_ENTITLEMENTS = TablePractice/TablePractice.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TablePractice/Preview Content\"";
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -506,10 +510,10 @@
 		76B95A622C2620400052EA05 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
@@ -529,10 +533,10 @@
 		76B95A632C2620400052EA05 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
@@ -552,9 +556,9 @@
 		76B95A652C2620400052EA05 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
@@ -574,9 +578,9 @@
 		76B95A662C2620400052EA05 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = K3XPBR5KT4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
