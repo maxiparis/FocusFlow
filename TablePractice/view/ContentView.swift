@@ -15,33 +15,42 @@ struct ContentView: View {
     @StateObject private var contentVM = ContentViewModel()
     var body: some View {
         NavigationStack {
+            
 //            List {
-//                ForEach(contentVM.tasks.indices, id: \.self) { index in
-//                    let task = contentVM.tasks[index]
-//                    
-//                    Button(action: {
-//                        testFunc(index: index)
-//                    }) {
-//                        Text("\(task.title)")
-//                            .foregroundColor(Color.primary) // Adjust text color for dark mode
+//                Section {
+//                    Text("\(contentVM.currentTime ?? "Welcome")")
+//                }
+//                
+//                Section {
+//                    ForEach($contentVM.tasks, id: \.self) { task in
+//                        NavigationLink {
+//                            AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM)
+//                        } label: {
+//                            let time = task.wrappedValue.timer
+//                            let timeString = "\(time.hours)h \(time.minute)m"
+//                            HStack {
+//                                Text("\(task.wrappedValue.title)")
+//                                Spacer()
+//                                Text("\(timeString)")
+//                            }
+//                        }
 //                    }
-//                    .buttonStyle(.plain)
 //                }
 //            }
             List($contentVM.tasks, id: \.self, editActions: .all) { task in
-//                Button(action: {
-//                    selectedTask = task.wrappedValue
-//                    displayAddSheet = true
-//                }) {
-//                    Text("\(task.title.wrappedValue) - \(task.wrappedValue.generateTimerText())")
-//                }
-//                .tint(Color.primary) //TODO: fix color to match dark mode as well
+                
                 NavigationLink {
                     AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM)
                 } label: {
-                    Text("\(task.wrappedValue.title)")
+                    let time = task.wrappedValue.timer
+                    let timeString = "\(time.hours)h \(time.minute)m"
+                    HStack {
+                        Text("\(task.wrappedValue.title)")
+                        Spacer()
+                        Text("\(timeString)")
+                    }
                 }
-
+                
             }
             .sheet(isPresented: $displayAddSheet, content: {
                 AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
@@ -69,7 +78,7 @@ struct ContentView: View {
                         displayTimerView.toggle()
                         print("Start tapped")
                     } label: {
-                        Text("Start Routine")
+                        Text("Start Focus Session")
                             .font(.callout)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
@@ -79,10 +88,15 @@ struct ContentView: View {
                     .disabled(contentVM.tasks.isEmpty)
                 }
             }
-            .navigationTitle("Routine")
+            .navigationTitle("FocusFlow")
             .navigationDestination(isPresented: $displayTimerView) {
                 TimerView(timerVM: TimerViewModel(tasks: contentVM.tasks))
             }
+            
+            Text("Estimated finishing time: \(contentVM.estimatedFinishingTime)")
+                .padding()
+        }.onAppear(){
+            contentVM.updateCurrentTime()
         }
         
     }
