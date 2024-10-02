@@ -16,6 +16,7 @@
 		76B95A3F2C26203F0052EA05 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B95A3E2C26203F0052EA05 /* ContentView.swift */; };
 		76B95A412C2620400052EA05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76B95A402C2620400052EA05 /* Assets.xcassets */; };
 		76B95A452C2620400052EA05 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76B95A442C2620400052EA05 /* Preview Assets.xcassets */; };
+		B2096D182CACFE580018E223 /* TasksData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D172CACFE580018E223 /* TasksData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		76B95A442C2620400052EA05 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		76B95A4A2C2620400052EA05 /* TablePracticeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablePracticeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		76B95A542C2620400052EA05 /* TablePracticeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablePracticeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2096D172CACFE580018E223 /* TasksData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				7635C1282C29E82500789148 /* Task.swift */,
+				B2096D172CACFE580018E223 /* TasksData.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				7635C12B2C2B5DCA00789148 /* TimerView.swift in Sources */,
 				7635C1262C29CC4500789148 /* ContentViewModel.swift in Sources */,
 				76B95A3F2C26203F0052EA05 /* ContentView.swift in Sources */,
+				B2096D182CACFE580018E223 /* TasksData.swift in Sources */,
 				7635C1292C29E82500789148 /* Task.swift in Sources */,
 				76B95A3D2C26203F0052EA05 /* TablePracticeApp.swift in Sources */,
 				7635C1242C29BE5300789148 /* AddView.swift in Sources */,

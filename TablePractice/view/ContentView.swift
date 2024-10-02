@@ -22,7 +22,7 @@ struct ContentView: View {
                 ) {
                     List($contentVM.tasks, id: \.self, editActions: .all) { task in
                         NavigationLink {
-                            AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM)
+                            AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM, editing: true)
                         } label: {
                             let time = task.wrappedValue.timer
                             let timeString = "\(time.hours)h \(time.minute)m"
@@ -36,7 +36,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $displayAddSheet, content: {
-                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
+                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM, editing: false)
             })
             .toolbar {
                 //Edit
