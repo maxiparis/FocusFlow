@@ -18,7 +18,7 @@ struct ContentView: View {
             Form {
                 Section(
                     header: Text("Focus Session"),
-                    footer: Text("Estimated finishing time: \(contentVM.estimatedFinishingTime)")
+                    footer: Text("Estimated finishing time: \(contentVM.estimatedFinishingTime)") //TODO: add something like "in 3 hours and 45 minutes"
                 ) {
                     List($contentVM.tasks, id: \.self, editActions: .all) { task in
                         NavigationLink {
@@ -75,10 +75,7 @@ struct ContentView: View {
             .navigationDestination(isPresented: $displayTimerView) {
                 TimerView(timerVM: TimerViewModel(tasks: contentVM.tasks))
             }
-        }.onAppear(){
-            contentVM.updateCurrentTime()
-        }
-        
+        }        
     }
 }
 

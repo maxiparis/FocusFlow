@@ -19,6 +19,8 @@ struct AddView: View {
     @Binding var isPresented: Bool
     @ObservedObject var contentVM: ContentViewModel
     
+    let hoursMinutesData = HoursMinutes.shared
+    
     init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: ContentViewModel, editing: Bool) {
         self.selectedTask = selectedTask
         self._isPresented = isPresented
@@ -66,8 +68,8 @@ struct AddView: View {
                             Text("Hours").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedHour) {
-                                ForEach(contentVM.hours.indices) {
-                                    Text(contentVM.hours[$0].description)
+                                ForEach(hoursMinutesData.hours.indices) {
+                                    Text(hoursMinutesData.hours[$0].description)
                                         .tag($0)
                                 }
                             }
@@ -80,8 +82,8 @@ struct AddView: View {
                             Text("Minutes").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedMinute) {
-                                ForEach(contentVM.minutes.indices) {
-                                    Text(contentVM.minutes[$0].description)
+                                ForEach(hoursMinutesData.minutes.indices) {
+                                    Text(hoursMinutesData.minutes[$0].description)
                                         .tag($0)
                                 }
                             }
@@ -100,7 +102,6 @@ struct AddView: View {
                         }
                         self.isPresented = false
                         dismiss()
-                        // TODO: dismiss view here??
                         
                     } label: {
                         Text("Save").font(.title3)
