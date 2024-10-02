@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'FocusFlowUITests' in project 'FocusFlow'
+➜ Explicit dependency on target 'FocusFlow' in project 'FocusFlow'
+Target 'FocusFlowTests' in project 'FocusFlow'
+➜ Explicit dependency on target 'FocusFlow' in project 'FocusFlow'
+Target 'FocusFlow' in project 'FocusFlow' (no dependencies)
