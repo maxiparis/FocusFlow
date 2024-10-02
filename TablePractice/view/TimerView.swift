@@ -62,8 +62,8 @@ struct TimerView: View {
 
 
 #Preview {
-    var task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
-    var taskList = [task]
+    let task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
+    let taskList = [task]
     
     TimerView(timerVM: TimerViewModel(tasks: taskList))
 }
