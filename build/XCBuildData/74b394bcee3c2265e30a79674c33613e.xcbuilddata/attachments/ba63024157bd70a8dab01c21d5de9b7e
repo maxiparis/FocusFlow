@@ -1,0 +1,88 @@
+{
+  "" : {
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/FocusFlow-master.dia",
+    "emit-module-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/FocusFlow-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/FocusFlow-master-emit-module.dia",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/FocusFlow-master.swiftdeps"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/model/Task.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/Task~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/view/AddView.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/AddView~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/view/ContentView.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentView~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/view/TablePracticeApp.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TablePracticeApp~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/view/TimerView.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerView~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/viewModel/ContentViewModel.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/ContentViewModel~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/FocusFlow/viewModel/TimerViewModel.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/TimerViewModel~partial.swiftmodule"
+  },
+  "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/maxiparis/Documents/Programming/TablePractice/build/FocusFlow.build/Debug-iphonesimulator/FocusFlow.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

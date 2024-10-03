@@ -15,49 +15,54 @@ struct ContentView: View {
     @StateObject private var contentVM = ContentViewModel()
     var body: some View {
         NavigationStack {
-//            List {
-//                ForEach(contentVM.tasks.indices, id: \.self) { index in
-//                    let task = contentVM.tasks[index]
-//                    
-//                    Button(action: {
-//                        testFunc(index: index)
-//                    }) {
-//                        Text("\(task.title)")
-//                            .foregroundColor(Color.primary) // Adjust text color for dark mode
-//                    }
-//                    .buttonStyle(.plain)
-//                }
-//            }
-            List($contentVM.tasks, id: \.self, editActions: .all) { task in
-//                Button(action: {
-//                    selectedTask = task.wrappedValue
-//                    displayAddSheet = true
-//                }) {
-//                    Text("\(task.title.wrappedValue) - \(task.wrappedValue.generateTimerText())")
-//                }
-//                .tint(Color.primary) //TODO: fix color to match dark mode as well
-                NavigationLink {
-                    AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM)
-                } label: {
-                    Text("\(task.wrappedValue.title)")
+            Form {
+                Section {
+                    if (contentVM.tasks.isEmpty) {
+                        Button {
+                            triggerAddView()
+                        } label: {
+                            Label("Add a task", systemImage: "plus")
+                        }
+                        
+                    } else {
+                        List($contentVM.tasks, id: \.self, editActions: .all) { task in
+                            NavigationLink {
+                                AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM, editing: true)
+                            } label: {
+                                let time = task.wrappedValue.timer
+                                let timeString = "\(time.hours)h \(time.minute)m"
+                                HStack {
+                                    Text("\(task.wrappedValue.title)")
+                                    Spacer()
+                                    Text("\(timeString)")
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Focus Session")
+                } footer: {
+                    if (contentVM.tasks.isEmpty) {
+                        Text("We will predict your finishing time when you add your first task.")
+                    } else {
+                        Text("If you stick to the plan you'd be done at \(contentVM.estimatedFinishingTime), in \(contentVM.estimatedFinishingTimeRelative) ")
+                    }
                 }
-
             }
             .sheet(isPresented: $displayAddSheet, content: {
-                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM)
+                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM, editing: false)
             })
             .toolbar {
                 //Edit
                 ToolbarItem(placement: .topBarLeading) {
-                    EditButton()
+                    EditButton().disabled(contentVM.tasks.isEmpty)
                 }
                 
                 //Add
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         print("Add tapped")
-                        selectedTask = nil
-                        displayAddSheet = true
+                        triggerAddView()
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -69,25 +74,28 @@ struct ContentView: View {
                         displayTimerView.toggle()
                         print("Start tapped")
                     } label: {
-                        Text("Start Routine")
+                        Text("Start Focus Session")
                             .font(.callout)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                     }
                     .buttonStyle(BorderedProminentButtonStyle())
-                    .tint(Color.green)
                     .disabled(contentVM.tasks.isEmpty)
                 }
             }
-            .navigationTitle("Routine")
+            .navigationTitle("FocusFlow")
             .navigationDestination(isPresented: $displayTimerView) {
                 TimerView(timerVM: TimerViewModel(tasks: contentVM.tasks))
             }
         }
-        
+    }
+    
+    func triggerAddView() {
+        selectedTask = nil
+        displayAddSheet = true
     }
 }
 
-//#Preview {
-//    ContentView()
-//}
+#Preview {
+    ContentView()
+}

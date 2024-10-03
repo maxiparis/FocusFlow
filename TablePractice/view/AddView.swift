@@ -11,7 +11,7 @@ struct AddView: View {
     @Environment(\.dismiss) var dismiss
 
     private var selectedTask: Task?
-    
+    public var editing: Bool
     @State private var activityName: String
     @State private var selectedHour: Int
     @State private var selectedMinute: Int
@@ -19,10 +19,13 @@ struct AddView: View {
     @Binding var isPresented: Bool
     @ObservedObject var contentVM: ContentViewModel
     
-    init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: ContentViewModel) {
+    let hoursMinutesData = HoursMinutes.shared
+    
+    init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: ContentViewModel, editing: Bool) {
         self.selectedTask = selectedTask
         self._isPresented = isPresented
         self.contentVM = contentVM
+        self.editing = editing
         
         if let task = selectedTask {
             activityName = task.title
@@ -40,12 +43,14 @@ struct AddView: View {
             HStack {
                 Spacer()
                 VStack(alignment: .center) {
-                    HStack {
-                        Button("Cancel") {
-                            self.isPresented = false
+                    if (!editing) {
+                        HStack {
+                            Button("Cancel") {
+                                self.isPresented = false
+                            }
+                            .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                            Spacer()
                         }
-                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-                        Spacer()
                     }
                     Spacer()
                     
@@ -63,8 +68,8 @@ struct AddView: View {
                             Text("Hours").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedHour) {
-                                ForEach(contentVM.hours.indices) {
-                                    Text(contentVM.hours[$0].description)
+                                ForEach(hoursMinutesData.hours.indices) {
+                                    Text(hoursMinutesData.hours[$0].description)
                                         .tag($0)
                                 }
                             }
@@ -77,8 +82,8 @@ struct AddView: View {
                             Text("Minutes").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedMinute) {
-                                ForEach(contentVM.minutes.indices) {
-                                    Text(contentVM.minutes[$0].description)
+                                ForEach(hoursMinutesData.minutes.indices) {
+                                    Text(hoursMinutesData.minutes[$0].description)
                                         .tag($0)
                                 }
                             }
@@ -97,7 +102,6 @@ struct AddView: View {
                         }
                         self.isPresented = false
                         dismiss()
-                        // TODO: dismiss view here??
                         
                     } label: {
                         Text("Save").font(.title3)

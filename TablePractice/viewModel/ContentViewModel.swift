@@ -8,48 +8,64 @@
 import Foundation
 import Observation
 
-private let TASKS_KEY = "tasksArrayKey"
-
 class ContentViewModel: ObservableObject {
     
-    private var defaults = UserDefaults.standard
+    private var model = TasksData()
     @Published var tasks: [Task] {
         didSet {
-            print(tasks)
-            saveTasks() //Every time tasks is updated (deleting or updating a task) the tasks array is saved to the defaults
+            saveTasksToModel()
         }
     }
-    
-    var hours: [Int]
-    var minutes: [Int]
+    var estimatedFinishingTime: String {
+        get {
+            let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+                let time = task.timer
+                return result + (time.hours * 3600 + time.minute * 60)
+            }
+            
+            let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .none
+            dateFormatter.timeStyle = .short
+            return dateFormatter.string(from: finishingTime)
+        }
+    }
+    var estimatedFinishingTimeRelative: String {
+        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+            let time = task.timer
+            return result + (time.hours * 3600 + time.minute * 60)
+        }
+        
+        // If total time is zero, return "No tasks remaining"
+        guard totalTimeInSeconds > 0 else {
+            return "No tasks remaining"
+        }
+        
+        // Calculate hours and minutes
+        let hours = totalTimeInSeconds / 3600
+        let minutes = (totalTimeInSeconds % 3600) / 60
+        
+        // Create a human-readable string
+        var components = [String]()
+        
+        if hours > 0 {
+            components.append("\(hours) hour\(hours > 1 ? "s" : "")")
+        }
+        if minutes > 0 {
+            components.append("\(minutes) minute\(minutes > 1 ? "s" : "")")
+        }
+        
+        return components.joined(separator: " and ")
+    }
     
     init() {
-        self.hours = [0,1,2,3,4,5,6,7,8,9,10,11,12]
-        self.minutes = []
-        
-        for number in 0...59 {
-            self.minutes.append(number)
-        }
-        
-        self.tasks = []
-        loadTasks()
+        self.tasks = model.tasks
     }
     
-    func addTask(_ task: Task) {
-            tasks.append(task)
-            saveTasks()
-        }
-        
-        private func saveTasks() {
-            if let encodedData = try? JSONEncoder().encode(tasks) {
-                defaults.set(encodedData, forKey: TASKS_KEY)
-            }
-        }
-        
-        private func loadTasks() {
-            if let tasksData = defaults.data(forKey: TASKS_KEY),
-               let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
-                self.tasks = decodedTasks
-            }
-        }
+    
+    func saveTasksToModel() {
+        model.saveTasks(self.tasks)
+    }
+    
+    
 }
