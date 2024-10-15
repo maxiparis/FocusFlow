@@ -8,9 +8,9 @@
 import Foundation
 import Observation
 
-class ContentViewModel: ObservableObject {
+class TasksViewModel: ObservableObject {
     
-    private var model = TasksData()
+    var model = TasksData()
     @Published var tasks: [Task] {
         didSet {
             saveTasksToModel()

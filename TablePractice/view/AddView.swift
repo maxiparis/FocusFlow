@@ -17,11 +17,11 @@ struct AddView: View {
     @State private var selectedMinute: Int
     
     @Binding var isPresented: Bool
-    @ObservedObject var contentVM: ContentViewModel
+    @ObservedObject var contentVM: TasksViewModel
     
     let hoursMinutesData = HoursMinutes.shared
     
-    init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: ContentViewModel, editing: Bool) {
+    init(selectedTask: Task?, isPresented: Binding<Bool>, contentVM: TasksViewModel, editing: Bool) {
         self.selectedTask = selectedTask
         self._isPresented = isPresented
         self.contentVM = contentVM

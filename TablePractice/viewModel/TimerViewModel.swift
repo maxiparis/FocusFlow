@@ -14,14 +14,20 @@ private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 
 
 class TimerViewModel: ObservableObject {
+    
+    var tasksData: TasksData
+    
     @Published var tasks: [Task]
     @Published var currentTaskIndex: Int?
     @Published var countdownString: String = ""
     @Published var timerPaused: Bool = false
+    @Published var nextActivityText: String = ""
+    
     var timer: Timer = Timer()
     
-    init(tasks: [Task]) {
-        self.tasks = tasks
+    init(model: TasksData) {
+        self.tasksData = model
+        self.tasks = tasksData.tasks
         if (self.tasks.count > 0) {
             self.currentTaskIndex = 0
         } else {
@@ -37,16 +43,18 @@ class TimerViewModel: ObservableObject {
                 if self.tasks[index].timer.remainingTimeInSecs > 0 {
                     self.tasks[index].timer.remainingTimeInSecs -= 1
                     self.generateCountdownString()
+                    self.saveTasksToModel()
                 } else {
                     index += 1
                     self.currentTaskIndex = index
                     self.tasks[index].timer.remainingTimeInSecs -= 1
                     self.generateCountdownString()
-
+                    self.saveTasksToModel()
                 }
             }
         }
     }
+    
     
     func pauseTimer() {
         timer.invalidate()
@@ -94,6 +102,21 @@ class TimerViewModel: ObservableObject {
                 let countdownStringWithoutHours = minutesText + ":" + secondsText
                 countdownString = countdownStringWithoutHours
             }
+        }
+    }
+    
+    func saveTasksToModel() {
+        self.tasksData.tasks = self.tasks
+    }
+    
+    func generateNextActivityText() {
+        let currentTaskIsLastOne = tasksData.tasks[tasksData.currentTaskIndex] == tasksData.tasks.last
+        
+        if currentTaskIsLastOne {
+            self.nextActivityText = "This is your last task. "
+        } else {
+            let nextTaskTitle = tasksData.tasks[tasksData.currentTaskIndex+1].title
+            self.nextActivityText = "Next Activity: \(nextTaskTitle)."
         }
     }
     

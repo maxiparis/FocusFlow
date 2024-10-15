@@ -49,24 +49,25 @@ struct TimerView: View {
                     }
                 }
                 
-                Text("Next Actity: ")
+                Text(timerVM.nextActivityText)
                 Text("Time you will be done: ")
                 
                 Spacer()
             }
         }.onAppear() {
             timerVM.startTimer()
+            timerVM.generateNextActivityText()
         }
     }
 }
 
 
-#Preview {
-    let task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
-    let taskList = [task]
-    
-    TimerView(timerVM: TimerViewModel(tasks: taskList))
-}
+//#Preview {
+//    let task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
+//    let taskList = [task]
+//    
+//    TimerView(timerVM: TimerViewModel(tasks: taskList))
+//}
 
 
 struct ButtonImageView: View {

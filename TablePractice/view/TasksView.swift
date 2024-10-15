@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct TasksView: View {
     @State private var displayAddSheet = false
     @State private var displayTimerView = false
     @State private var selectedTask: Task? = nil
     
-    @StateObject private var contentVM = ContentViewModel()
+    @StateObject private var contentVM = TasksViewModel()
     var body: some View {
         NavigationStack {
             Form {
@@ -85,7 +85,7 @@ struct ContentView: View {
             }
             .navigationTitle("FocusFlow")
             .navigationDestination(isPresented: $displayTimerView) {
-                TimerView(timerVM: TimerViewModel(tasks: contentVM.tasks))
+                TimerView(timerVM: TimerViewModel(model: contentVM.model))
             }
         }
     }
@@ -97,5 +97,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    TasksView()
 }
