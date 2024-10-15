@@ -50,7 +50,7 @@ struct TimerView: View {
                 }
                 
                 Text(timerVM.nextActivityText)
-                Text("Time you will be done: ")
+                Text("Time you will be done: \(timerVM.estimatedFinishingTime)")
                 
                 Spacer()
             }

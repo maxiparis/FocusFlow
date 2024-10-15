@@ -25,6 +25,13 @@ class TimerViewModel: ObservableObject {
     
     var timer: Timer = Timer()
     
+    var estimatedFinishingTime: String {
+        tasksData.estimatedFinishingTime
+    }
+    var estimatedFinishingTimeRelative: String {
+        tasksData.estimatedFinishingTimeRelative
+    }
+    
     init(model: TasksData) {
         self.tasksData = model
         self.tasks = tasksData.tasks
@@ -119,5 +126,7 @@ class TimerViewModel: ObservableObject {
             self.nextActivityText = "Next Activity: \(nextTaskTitle)."
         }
     }
+    
+    
     
 }
