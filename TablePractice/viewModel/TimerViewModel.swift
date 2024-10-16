@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 import Combine
+import SwiftUI
 
 private let SECONDS_IN_MINUTE = 60
 private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
@@ -24,12 +25,15 @@ class TimerViewModel: ObservableObject {
     @Published var timerPaused: Bool = false
     @Published var nextActivityText: String = ""
     
+    @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
+    
     var timer: Timer = Timer()
     
     //MARK: - Initializer
 
-    init(model: TasksData) {
+    init(model: TasksData, isPresented: Binding<Bool>) {
         self.tasksData = model
+        self._isPresented = isPresented
         self.tasks = tasksData.tasks
         if (self.tasks.count > 0) {
             self.currentTaskIndex = 0
@@ -90,7 +94,9 @@ class TimerViewModel: ObservableObject {
             let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
 
             if currentTaskIsLastOne {
-                //dismiss
+                //dismiss view
+                //tell the user how much time they saved or wasted
+                isPresented = false
             } else {
                 self.currentTaskIndex = currentTaskIndex + 1
             }
