@@ -11,8 +11,19 @@ import Foundation
 private let TASKS_KEY = "tasksArrayKey"
 
 class PersistenceManager {
+    
+    // MARK: - Variables
+    
+    static let shared = PersistenceManager()
+    
     private var defaults = UserDefaults.standard
+    
+    // MARK: - Private initializer
+    
+    private init() { }
 
+    
+    // MARK: - Data Access/Persistance
     
     func saveTasks(_ tasks: [Task]) {
         if let encodedData = try? JSONEncoder().encode(tasks) {
@@ -28,3 +39,4 @@ class PersistenceManager {
         return nil
     }
 }
+

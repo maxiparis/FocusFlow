@@ -11,7 +11,7 @@ struct TasksData {
     
     //MARK: - Properties
     
-    private var persistanceManager = PersistenceManager()
+    private var persistanceManager = PersistenceManager.shared
     
     var tasks: [Task] {
         didSet {

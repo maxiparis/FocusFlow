@@ -41,3 +41,15 @@ struct Time: Decodable, Encodable {
         self.remainingTimeInSecs = (hours * 60 * 60) + (minute * 60)
     }
 }
+
+struct SessionTask: Hashable, Equatable, Decodable, Encodable {
+    static func == (lhs: SessionTask, rhs: SessionTask) -> Bool {
+        <#code#>
+    }
+    
+    var task: Task
+    var totalFinishingTime: Time
+    var isCompleted: Bool {
+        task.completed
+    }
+}
