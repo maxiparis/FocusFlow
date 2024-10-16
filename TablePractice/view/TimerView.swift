@@ -58,6 +58,9 @@ struct TimerView: View {
             timerVM.startTimer()
             timerVM.generateNextActivityText()
         }
+        .onDisappear() {
+            timerVM.pauseTimer()
+        }
     }
 }
 
