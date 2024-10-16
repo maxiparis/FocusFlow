@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "E774F020-7188-4C6A-A407-99F5920C2EF7"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0DE51A6A-AE64-443A-8A98-2907B49A0EAD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TablePractice/viewModel/TimerViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
+            landmarkName = "generateNextActivityText()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0DE51A6A-AE64-443A-8A98-2907B49A0EAD - 197f68e2dfd97a41"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TablePractice.TimerViewModel.generateNextActivityText() -&gt; ()"
+                  moduleName = "TablePractice.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maxiparis/Documents/Programming/TablePractice/TablePractice/viewModel/TimerViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "160"
+                  endingLineNumber = "160">
+               </Location>
+               <Location
+                  uuid = "0DE51A6A-AE64-443A-8A98-2907B49A0EAD - 197f68e2dfd97a41"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TablePractice.TimerViewModel.generateNextActivityText() -&gt; ()"
+                  moduleName = "TablePractice.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maxiparis/Documents/Programming/TablePractice/TablePractice/viewModel/TimerViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "160"
+                  endingLineNumber = "160">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
