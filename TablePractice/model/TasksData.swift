@@ -38,17 +38,25 @@ class TasksData {
     }
     
     var estimatedFinishingTime: String {
-        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+        // Filter out completed tasks
+        let incompleteTasks = tasks.filter { !$0.completed }
+        
+        // Calculate the total time for incomplete tasks
+        let totalTimeInSeconds = incompleteTasks.reduce(0) { (result, task) -> Int in
             let time = task.timer
             return result + (time.hours * 3600 + time.minute * 60)
         }
         
+        // Calculate the estimated finishing time
         let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
+        
+        // Format the finishing time as a short time string
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
         return dateFormatter.string(from: finishingTime)
     }
+
     var estimatedFinishingTimeRelative: String {
         let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
             let time = task.timer
