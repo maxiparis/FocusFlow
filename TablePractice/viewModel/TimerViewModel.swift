@@ -15,23 +15,20 @@ private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 
 class TimerViewModel: ObservableObject {
     
-    var tasksData: TasksData
+    //MARK: - Variables
     
+    var tasksData: TasksData
     @Published var tasks: [Task]
     @Published var currentTaskIndex: Int?
     @Published var countdownString: String = ""
     @Published var timerPaused: Bool = false
-    @Published var nextActivityText: String = ""
+    var nextActivityText: String = ""
     
     var timer: Timer = Timer()
     
-    var estimatedFinishingTime: String {
-        tasksData.estimatedFinishingTime
-    }
-    var estimatedFinishingTimeRelative: String {
-        tasksData.estimatedFinishingTimeRelative
-    }
     
+    //MARK: - Initializer
+
     init(model: TasksData) {
         self.tasksData = model
         self.tasks = tasksData.tasks
@@ -42,6 +39,22 @@ class TimerViewModel: ObservableObject {
         }
     }
     
+    //MARK: - Model access
+
+    var estimatedFinishingTime: String {
+        tasksData.estimatedFinishingTime
+    }
+    
+    var estimatedFinishingTimeRelative: String {
+        tasksData.estimatedFinishingTimeRelative
+    }
+    
+    func saveTasksToModel() {
+        self.tasksData.tasks = self.tasks
+    }
+    
+    //MARK: - User Intents
+
     func startTimer() {
         self.timerPaused = false
         self.generateCountdownString()
@@ -67,6 +80,8 @@ class TimerViewModel: ObservableObject {
         timer.invalidate()
         timerPaused = true
     }
+    
+    //MARK: - UI Utils
     
     func generateCountdownString() {
         if let index = self.currentTaskIndex {
@@ -110,10 +125,6 @@ class TimerViewModel: ObservableObject {
                 countdownString = countdownStringWithoutHours
             }
         }
-    }
-    
-    func saveTasksToModel() {
-        self.tasksData.tasks = self.tasks
     }
     
     func generateNextActivityText() {

@@ -10,12 +10,25 @@ import Observation
 
 class TasksViewModel: ObservableObject {
     
+    //MARK: - Properties
+
     var model = TasksData()
     @Published var tasks: [Task] {
         didSet {
             saveTasksToModel()
         }
     }
+    
+    
+    //MARK: - Initializer
+
+    init() {
+        self.tasks = model.tasks
+    }
+    
+    
+    //MARK: - Model access
+
     var estimatedFinishingTime: String {
         model.estimatedFinishingTime
     }
@@ -23,14 +36,7 @@ class TasksViewModel: ObservableObject {
         model.estimatedFinishingTimeRelative
     }
     
-    init() {
-        self.tasks = model.tasks
-    }
-    
-    
     func saveTasksToModel() {
         model.saveTasks(self.tasks)
     }
-    
-    
 }
