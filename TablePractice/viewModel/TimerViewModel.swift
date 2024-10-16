@@ -14,14 +14,23 @@ private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 
 
 class TimerViewModel: ObservableObject {
-    @Published var tasks: [Task]
+    
+    //MARK: - Variables
+    
+    @Published var tasksData: TasksData
+    @Published var tasks: [Task] = []
     @Published var currentTaskIndex: Int?
     @Published var countdownString: String = ""
     @Published var timerPaused: Bool = false
+    @Published var nextActivityText: String = ""
+    
     var timer: Timer = Timer()
     
-    init(tasks: [Task]) {
-        self.tasks = tasks
+    //MARK: - Initializer
+
+    init(model: TasksData) {
+        self.tasksData = model
+        self.tasks = tasksData.tasks
         if (self.tasks.count > 0) {
             self.currentTaskIndex = 0
         } else {
@@ -29,6 +38,22 @@ class TimerViewModel: ObservableObject {
         }
     }
     
+    //MARK: - Model access
+
+    var estimatedFinishingTime: String {
+        tasksData.estimatedFinishingTime
+    }
+    
+    var estimatedFinishingTimeRelative: String {
+        tasksData.estimatedFinishingTimeRelative
+    }
+    
+    func saveTasksToModel() {
+        self.tasksData.tasks = self.tasks
+    }
+    
+    //MARK: - User Intents
+
     func startTimer() {
         self.timerPaused = false
         self.generateCountdownString()
@@ -37,22 +62,56 @@ class TimerViewModel: ObservableObject {
                 if self.tasks[index].timer.remainingTimeInSecs > 0 {
                     self.tasks[index].timer.remainingTimeInSecs -= 1
                     self.generateCountdownString()
+                    self.saveTasksToModel()
                 } else {
                     index += 1
                     self.currentTaskIndex = index
                     self.tasks[index].timer.remainingTimeInSecs -= 1
                     self.generateCountdownString()
-
+                    self.saveTasksToModel()
                 }
             }
         }
     }
+    
     
     func pauseTimer() {
         timer.invalidate()
         timerPaused = true
     }
     
+    func completeTask() {
+        if let currentTaskIndex {
+            self.pauseTimer()
+            
+            tasksData.completeTask(in: currentTaskIndex)
+            self.tasks = tasksData.tasks
+            
+            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+
+            if currentTaskIsLastOne {
+                //dismiss
+            } else {
+                self.currentTaskIndex = currentTaskIndex + 1
+            }
+            
+            generateNextActivityText()
+            self.startTimer()
+            
+        }
+        
+    }
+    
+    //MARK: - Utils
+    
+    func restartCurrentTaskIndex() {
+        self.currentTaskIndex = 0
+    }
+
+    
+    //MARK: - UI Utils
+    
+        
     func generateCountdownString() {
         if let index = self.currentTaskIndex {
             var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
@@ -96,5 +155,20 @@ class TimerViewModel: ObservableObject {
             }
         }
     }
+    
+    func generateNextActivityText() {
+        if let currentTaskIndex {
+            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+            
+            if currentTaskIsLastOne {
+                self.nextActivityText = "This is your last task. "
+            } else {
+                let nextTaskTitle = self.tasks[currentTaskIndex+1].title
+                self.nextActivityText = "Next Activity: \(nextTaskTitle)."
+            }
+        }
+    }
+    
+    
     
 }

@@ -9,9 +9,14 @@ import Foundation
 
 private let TASKS_KEY = "tasksArrayKey"
 
-struct TasksData {
+class TasksData {
     private var defaults = UserDefaults.standard
-    var tasks: [Task]
+    var tasks: [Task] {
+        didSet {
+            print("\n\n***Tasks in the model was set to = \(tasks)")
+        }
+    }
+    var currentTaskIndex = 0
     
     init() {
         self.tasks = []
@@ -20,20 +25,62 @@ struct TasksData {
 
     func saveTasks(_ tasks: [Task] ) {
         if let encodedData = try? JSONEncoder().encode(tasks) {
+            self.tasks = tasks
             defaults.set(encodedData, forKey: TASKS_KEY)
         }
     }
     
-    private mutating func loadTasks() {
+    private func loadTasks() {
         if let tasksData = defaults.data(forKey: TASKS_KEY),
            let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
             self.tasks = decodedTasks
         }
     }
     
-//    mutating func addTask(_ task: Task) {
-//        tasks.append(task)
-//        saveTasks(self.tasks)
-//    }
+    var estimatedFinishingTime: String {
+        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+            let time = task.timer
+            return result + (time.hours * 3600 + time.minute * 60)
+        }
+        
+        let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: finishingTime)
+    }
+    var estimatedFinishingTimeRelative: String {
+        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+            let time = task.timer
+            return result + (time.hours * 3600 + time.minute * 60)
+        }
+        
+        // If total time is zero, return "No tasks remaining"
+        guard totalTimeInSeconds > 0 else {
+            return "No tasks remaining"
+        }
+        
+        // Calculate hours and minutes
+        let hours = totalTimeInSeconds / 3600
+        let minutes = (totalTimeInSeconds % 3600) / 60
+        
+        // Create a human-readable string
+        var components = [String]()
+        
+        if hours > 0 {
+            components.append("\(hours) hour\(hours > 1 ? "s" : "")")
+        }
+        if minutes > 0 {
+            components.append("\(minutes) minute\(minutes > 1 ? "s" : "")")
+        }
+        
+        return components.joined(separator: " and ")
+    }
+    
+    func completeTask(in index: Int) {
+        self.tasks[index].completed = true
+        saveTasks(self.tasks)
+    }
+    
     
 }
