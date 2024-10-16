@@ -38,18 +38,16 @@ class TasksData {
     }
     
     var estimatedFinishingTime: String {
-        get {
-            let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
-                let time = task.timer
-                return result + (time.hours * 3600 + time.minute * 60)
-            }
-            
-            let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .none
-            dateFormatter.timeStyle = .short
-            return dateFormatter.string(from: finishingTime)
+        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+            let time = task.timer
+            return result + (time.hours * 3600 + time.minute * 60)
         }
+        
+        let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: finishingTime)
     }
     var estimatedFinishingTimeRelative: String {
         let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
@@ -77,6 +75,11 @@ class TasksData {
         }
         
         return components.joined(separator: " and ")
+    }
+    
+    func completeTask(in index: Int) {
+        self.tasks[index].completed = true
+        saveTasks(self.tasks)
     }
     
     

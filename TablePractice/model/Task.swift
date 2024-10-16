@@ -11,6 +11,7 @@ struct Task: Hashable, Equatable, Decodable, Encodable {
     
     var title: String
     var timer: Time
+    var completed: Bool = false
     
     static func == (lhs: Task, rhs: Task) -> Bool {
         return lhs.title == rhs.title && lhs.timer.hours == rhs.timer.hours && lhs.timer.minute == rhs.timer.minute

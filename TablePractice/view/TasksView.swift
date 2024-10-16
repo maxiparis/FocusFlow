@@ -85,8 +85,11 @@ struct TasksView: View {
             }
             .navigationTitle("FocusFlow")
             .navigationDestination(isPresented: $displayTimerView) {
-                TimerView(timerVM: TimerViewModel(model: contentVM.model))
+                TimerView(timerVM: TimerViewModel(model: contentVM.model), parentVM: contentVM)
             }
+        }
+        .onAppear {
+            contentVM.markTasksAsNotCompleted()
         }
     }
     

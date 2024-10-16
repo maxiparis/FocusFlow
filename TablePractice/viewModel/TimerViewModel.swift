@@ -17,15 +17,14 @@ class TimerViewModel: ObservableObject {
     
     //MARK: - Variables
     
-    var tasksData: TasksData
-    @Published var tasks: [Task]
+    @Published var tasksData: TasksData
+    @Published var tasks: [Task] = []
     @Published var currentTaskIndex: Int?
     @Published var countdownString: String = ""
     @Published var timerPaused: Bool = false
-    var nextActivityText: String = ""
+    @Published var nextActivityText: String = ""
     
     var timer: Timer = Timer()
-    
     
     //MARK: - Initializer
 
@@ -81,8 +80,38 @@ class TimerViewModel: ObservableObject {
         timerPaused = true
     }
     
+    func completeTask() {
+        if let currentTaskIndex {
+            self.pauseTimer()
+            
+            tasksData.completeTask(in: currentTaskIndex)
+            self.tasks = tasksData.tasks
+            
+            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+
+            if currentTaskIsLastOne {
+                //dismiss
+            } else {
+                self.currentTaskIndex = currentTaskIndex + 1
+            }
+            
+            generateNextActivityText()
+            self.startTimer()
+            
+        }
+        
+    }
+    
+    //MARK: - Utils
+    
+    func restartCurrentTaskIndex() {
+        self.currentTaskIndex = 0
+    }
+
+    
     //MARK: - UI Utils
     
+        
     func generateCountdownString() {
         if let index = self.currentTaskIndex {
             var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
@@ -128,13 +157,15 @@ class TimerViewModel: ObservableObject {
     }
     
     func generateNextActivityText() {
-        let currentTaskIsLastOne = tasksData.tasks[tasksData.currentTaskIndex] == tasksData.tasks.last
-        
-        if currentTaskIsLastOne {
-            self.nextActivityText = "This is your last task. "
-        } else {
-            let nextTaskTitle = tasksData.tasks[tasksData.currentTaskIndex+1].title
-            self.nextActivityText = "Next Activity: \(nextTaskTitle)."
+        if let currentTaskIndex {
+            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+            
+            if currentTaskIsLastOne {
+                self.nextActivityText = "This is your last task. "
+            } else {
+                let nextTaskTitle = self.tasks[currentTaskIndex+1].title
+                self.nextActivityText = "Next Activity: \(nextTaskTitle)."
+            }
         }
     }
     
