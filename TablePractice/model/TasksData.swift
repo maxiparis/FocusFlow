@@ -7,33 +7,16 @@
 
 import Foundation
 
-private let TASKS_KEY = "tasksArrayKey"
-
 struct TasksData {
-    private var defaults = UserDefaults.standard
+    
+    //MARK: - Properties
+    
+    private var persistanceManager = PersistenceManager()
+    
     var tasks: [Task] {
         didSet {
-            print("\n\n***Tasks in the model was set to = \(tasks)")
+            print("\n\nTasks in the model was set to = \(tasks)")
             saveTasks()
-        }
-    }
-    var currentTaskIndex = 0
-    
-    init() {
-        self.tasks = []
-        loadTasks()
-    }
-
-    func saveTasks() {
-        if let encodedData = try? JSONEncoder().encode(self.tasks) {
-            defaults.set(encodedData, forKey: TASKS_KEY)
-        }
-    }
-    
-    mutating private func loadTasks() {
-        if let tasksData = defaults.data(forKey: TASKS_KEY),
-           let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
-            self.tasks = decodedTasks
         }
     }
     
@@ -85,10 +68,23 @@ struct TasksData {
         return components.joined(separator: " and ")
     }
     
+    //MARK: - Initializers
+    
+    init() {
+        self.tasks = persistanceManager.loadTasks() ?? []
+    }
+    
+    //MARK: - Logic
+    
     mutating func completeTask(in index: Int) {
         self.tasks[index].completed = true
         saveTasks()
     }
     
+    //MARK: - Persistance
+    
+    func saveTasks() {
+        persistanceManager.saveTasks(tasks)
+    }
     
 }
