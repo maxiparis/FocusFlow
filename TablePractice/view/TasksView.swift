@@ -13,6 +13,7 @@ struct TasksView: View {
     @State private var selectedTask: Task? = nil
     
     @StateObject private var contentVM = TasksViewModel()
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -23,7 +24,6 @@ struct TasksView: View {
                         } label: {
                             Label("Add a task", systemImage: "plus")
                         }
-                        
                     } else {
                         List($contentVM.tasks, id: \.self, editActions: .all) { task in
                             NavigationLink {

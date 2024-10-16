@@ -9,11 +9,12 @@ import Foundation
 
 private let TASKS_KEY = "tasksArrayKey"
 
-class TasksData {
+struct TasksData {
     private var defaults = UserDefaults.standard
     var tasks: [Task] {
         didSet {
             print("\n\n***Tasks in the model was set to = \(tasks)")
+            saveTasks()
         }
     }
     var currentTaskIndex = 0
@@ -23,14 +24,13 @@ class TasksData {
         loadTasks()
     }
 
-    func saveTasks(_ tasks: [Task] ) {
-        if let encodedData = try? JSONEncoder().encode(tasks) {
-            self.tasks = tasks
+    func saveTasks() {
+        if let encodedData = try? JSONEncoder().encode(self.tasks) {
             defaults.set(encodedData, forKey: TASKS_KEY)
         }
     }
     
-    private func loadTasks() {
+    mutating private func loadTasks() {
         if let tasksData = defaults.data(forKey: TASKS_KEY),
            let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
             self.tasks = decodedTasks
@@ -85,9 +85,9 @@ class TasksData {
         return components.joined(separator: " and ")
     }
     
-    func completeTask(in index: Int) {
+    mutating func completeTask(in index: Int) {
         self.tasks[index].completed = true
-        saveTasks(self.tasks)
+        saveTasks()
     }
     
     

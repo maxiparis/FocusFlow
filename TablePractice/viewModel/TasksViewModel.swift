@@ -12,22 +12,14 @@ class TasksViewModel: ObservableObject {
     
     //MARK: - Properties
     
-    var model = TasksData()
-    @Published var tasks: [Task] {
-        didSet {
-            saveTasksToModel()
-        }
-    }
-    
-    
-    //MARK: - Initializer
-    
-    init() {
-        self.tasks = model.tasks
-    }
-    
+    @Published var model = TasksData()
     
     //MARK: - Model access
+    
+    var tasks: [Task] {
+        get { model.tasks }
+        set { model.tasks = newValue }
+    }
     
     var estimatedFinishingTime: String {
         model.estimatedFinishingTime
@@ -37,14 +29,9 @@ class TasksViewModel: ObservableObject {
         model.estimatedFinishingTimeRelative
     }
     
-    func saveTasksToModel() {
-        model.saveTasks(self.tasks)
-    }
-    
     func markTasksAsNotCompleted() {
-        for i in 0..<tasks.count {
-            tasks[i].completed = false
+        for i in 0..<model.tasks.count {
+            model.tasks[i].completed = false
         }
-        saveTasksToModel()
     }
 }
