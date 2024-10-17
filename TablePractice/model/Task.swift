@@ -7,20 +7,15 @@
 
 import Foundation
 
-struct Task: Hashable, Equatable, Decodable, Encodable {
-    
+struct Task: Identifiable, Equatable, Decodable, Encodable {
+        
+    var id = UUID()
     var title: String
     var timer: Time
     var completed: Bool = false
     
     static func == (lhs: Task, rhs: Task) -> Bool {
         return lhs.title == rhs.title && lhs.timer.hours == rhs.timer.hours && lhs.timer.minute == rhs.timer.minute
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(timer.hours)
-        hasher.combine(timer.minute)
     }
     
     func generateTimerText() -> String {
@@ -42,11 +37,7 @@ struct Time: Decodable, Encodable {
     }
 }
 
-struct SessionTask: Hashable, Equatable, Decodable, Encodable {
-    static func == (lhs: SessionTask, rhs: SessionTask) -> Bool {
-        <#code#>
-    }
-    
+struct SessionTask {
     var task: Task
     var totalFinishingTime: Time
     var isCompleted: Bool {

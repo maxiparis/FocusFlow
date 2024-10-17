@@ -25,7 +25,7 @@ struct TasksView: View {
                             Label("Add a task", systemImage: "plus")
                         }
                     } else {
-                        List($contentVM.tasks, id: \.self, editActions: .all) { task in
+                        List($contentVM.tasks, editActions: .all) { task in
                             NavigationLink {
                                 AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM, editing: true)
                             } label: {
