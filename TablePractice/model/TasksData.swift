@@ -83,13 +83,13 @@ struct TasksData {
     
     mutating func importDefaultTasks() {
         let tasks: [Task] = [
-            Task(title: "Take a quick break", timer: Time(hours: 0, minute: 15)),
-            Task(title: "Read news", timer: Time(hours: 0, minute: 10)),
-            Task(title: "Check emails", timer: Time(hours: 0, minute: 5)),
-            Task(title: "Finish class project", timer: Time(hours: 1, minute:0)),
-            Task(title: "Break/go on walk", timer: Time(hours: 0, minute:20)),
-            Task(title: "Finish class project", timer: Time(hours: 0, minute:30)),
-            Task(title: "Make dinner/eat", timer: Time(hours: 1, minute: 0))
+            Task(title: "Take a quick break", timer: TimeTracked(hours: 0, minute: 15)),
+            Task(title: "Read news", timer: TimeTracked(hours: 0, minute: 10)),
+            Task(title: "Check emails", timer: TimeTracked(hours: 0, minute: 5)),
+            Task(title: "Finish class project", timer: TimeTracked(hours: 1, minute:0)),
+            Task(title: "Break/go on walk", timer: TimeTracked(hours: 0, minute:20)),
+            Task(title: "Finish class project", timer: TimeTracked(hours: 0, minute:30)),
+            Task(title: "Make dinner/eat", timer: TimeTracked(hours: 1, minute: 0))
         ]
         
         self.tasks = tasks

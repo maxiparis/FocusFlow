@@ -36,7 +36,24 @@ class TimerViewModel: ObservableObject {
             return nil
         }
     }
-    @Published var countdownString: String = ""
+    var currentTask: Task? {
+        if let currentTaskIndex {
+            return tasks[currentTaskIndex]
+        } else {
+            return nil
+        }
+    }
+    var countdownString: String? {
+        if let currentTask {
+            if currentTask.timer.isOverdue {
+                return formatTime(from: currentTask.timer.timeExceeded)
+            } else {
+                return formatTime(from: currentTask.timer.remainingTimeInSecs)
+            }
+        } else {
+            return nil
+        }
+    }
     @Published var timerPaused: Bool = false
     @Published var nextActivityText: String = ""
     
@@ -68,18 +85,12 @@ class TimerViewModel: ObservableObject {
     
     func startTimer() {
         self.timerPaused = false
-        self.generateCountdownString()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if var index = self.currentTaskIndex {
-                if self.tasks[index].timer.remainingTimeInSecs > 0 {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            if let index = self.currentTaskIndex {
+                if !self.tasks[index].timer.isOverdue { // we are on track
                     self.tasks[index].timer.remainingTimeInSecs -= 1
-                    self.generateCountdownString()
-                    self.saveTasksToModel()
-                } else {
-                    index += 1
-                    self.tasks[index].timer.remainingTimeInSecs -= 1
-                    self.generateCountdownString()
-                    self.saveTasksToModel()
+                } else { // we are overdue
+                    self.tasks[index].timer.timeExceeded += 1
                 }
             }
         }
@@ -116,51 +127,62 @@ class TimerViewModel: ObservableObject {
     
     
     //MARK: - UI Utils
-    
-    
-    func generateCountdownString() {
-        if let index = self.currentTaskIndex {
-            var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
-            
-            let hours: Int = remainingSecondsForString / SECONDS_IN_HOUR
-            remainingSecondsForString -= hours * SECONDS_IN_HOUR
-            let minutes: Int = remainingSecondsForString / SECONDS_IN_MINUTE
-            remainingSecondsForString -= minutes * SECONDS_IN_MINUTE
-            
-            let hoursText: String? = {
-                if hours >= 10 {
-                    return hours.description
-                } else if hours >= 1 {
-                    return "0\(hours.description)"
-                } else {
-                    return nil
-                }
-            }()
-            let minutesText: String = {
-                if minutes >= 10 {
-                    return minutes.description
-                } else {
-                    return "0\(minutes.description)"
-                }
-            }()
-            let secondsText: String = {
-                if remainingSecondsForString >= 10 {
-                    return remainingSecondsForString.description
-                } else {
-                    return "0\(remainingSecondsForString.description)"
-                }
-            }()
-            
-            
-            if let hoursText = hoursText {
-                let countdownStringWithHours = hoursText + ":" + minutesText + ":" + secondsText
-                countdownString = countdownStringWithHours
-            } else {
-                let countdownStringWithoutHours = minutesText + ":" + secondsText
-                countdownString = countdownStringWithoutHours
-            }
+    func formatTime(from timeInterval: TimeInterval) -> String {
+        let hours = Int(timeInterval) / 3600
+        let minutes = (Int(timeInterval) % 3600) / 60
+        let seconds = Int(timeInterval) % 60
+        
+        if hours > 0 {
+            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            return String(format: "%02d:%02d", minutes, seconds)
         }
     }
+
+    
+//    func generateCountdownString() {
+//        if let index = self.currentTaskIndex {
+//            var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
+//            
+//            let hours: Int = Int(remainingSecondsForString) / SECONDS_IN_HOUR
+//            remainingSecondsForString -= Double(hours * SECONDS_IN_HOUR)
+//            let minutes: Int = Int(remainingSecondsForString) / SECONDS_IN_MINUTE
+//            remainingSecondsForString -= Double(minutes * SECONDS_IN_MINUTE)
+//            
+//            let hoursText: String? = {
+//                if hours >= 10 {
+//                    return hours.description
+//                } else if hours >= 1 {
+//                    return "0\(hours.description)"
+//                } else {
+//                    return nil
+//                }
+//            }()
+//            let minutesText: String = {
+//                if minutes >= 10 {
+//                    return minutes.description
+//                } else {
+//                    return "0\(minutes.description)"
+//                }
+//            }()
+//            let secondsText: String = {
+//                if remainingSecondsForString >= 10 {
+//                    return remainingSecondsForString.description
+//                } else {
+//                    return "0\(remainingSecondsForString.description)"
+//                }
+//            }()
+//            
+//            
+//            if let hoursText = hoursText {
+//                let countdownStringWithHours = hoursText + ":" + minutesText + ":" + secondsText
+//                countdownString = countdownStringWithHours
+//            } else {
+//                let countdownStringWithoutHours = minutesText + ":" + secondsText
+//                countdownString = countdownStringWithoutHours
+//            }
+//        }
+//    }
     
     func generateNextActivityText() {
         if let currentTaskIndex {

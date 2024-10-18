@@ -18,7 +18,7 @@ struct TimerView: View {
                 
                 Text(timerVM.tasks[currentTaskIndex].title).font(.largeTitle)
                 
-                Text(timerVM.countdownString)
+                Text(timerVM.countdownString ?? "Error")
                     .font(.largeTitle)
                 
                 HStack(spacing: 20) {

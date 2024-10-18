@@ -11,7 +11,7 @@ struct Task: Identifiable, Equatable, Decodable, Encodable {
         
     var id = UUID()
     var title: String
-    var timer: Time
+    var timer: TimeTracked
     var completed: Bool = false
     
     static func == (lhs: Task, rhs: Task) -> Bool {
@@ -25,22 +25,26 @@ struct Task: Identifiable, Equatable, Decodable, Encodable {
     }
 }
 
-struct Time: Decodable, Encodable {
+struct TimeTracked: Decodable, Encodable {
     var hours: Int
     var minute: Int
-    var remainingTimeInSecs: Int
-    
+    var remainingTimeInSecs: TimeInterval
+    var isOverdue: Bool {
+        remainingTimeInSecs == 0
+    }
+    var timeExceeded: TimeInterval = 0
+
     init(hours: Int, minute: Int) {
         self.hours = hours
         self.minute = minute
-        self.remainingTimeInSecs = (hours * 60 * 60) + (minute * 60)
+        self.remainingTimeInSecs = TimeInterval((hours * 60 * 60) + (minute * 60))
     }
 }
 
-struct SessionTask {
-    var task: Task
-    var totalFinishingTime: Time
-    var isCompleted: Bool {
-        task.completed
-    }
-}
+//struct SessionTask {
+//    var task: Task
+//    var totalFinishingTime: TimeTracked
+//    var isCompleted: Bool {
+//        task.completed
+//    }
+//}
