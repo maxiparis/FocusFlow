@@ -29,11 +29,11 @@ struct TasksData {
             // Extract the timer from the task
             let timer = task.timer
             
-            var exceededTime: TimeInterval = {
+            let exceededTime: TimeInterval = {
                 if let timerState = timer.timerState {
                     switch timerState {
                         case .exceeded(let seconds):
-                            return seconds * -1
+                            return seconds
                         default: //I only care if the current task has exceeded time
                             return 0
                     }
