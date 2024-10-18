@@ -7,48 +7,39 @@
 
 import Foundation
 
-private let TASKS_KEY = "tasksArrayKey"
-
-class TasksData {
-    private var defaults = UserDefaults.standard
+struct TasksData {
+    
+    //MARK: - Properties
+    
+    private var persistanceManager = PersistenceManager.shared
+    
     var tasks: [Task] {
         didSet {
-            print("\n\n***Tasks in the model was set to = \(tasks)")
-        }
-    }
-    var currentTaskIndex = 0
-    
-    init() {
-        self.tasks = []
-        loadTasks()
-    }
-
-    func saveTasks(_ tasks: [Task] ) {
-        if let encodedData = try? JSONEncoder().encode(tasks) {
-            self.tasks = tasks
-            defaults.set(encodedData, forKey: TASKS_KEY)
-        }
-    }
-    
-    private func loadTasks() {
-        if let tasksData = defaults.data(forKey: TASKS_KEY),
-           let decodedTasks = try? JSONDecoder().decode([Task].self, from: tasksData) {
-            self.tasks = decodedTasks
+            print("\n\nTasks in the model was set to = \(tasks)")
+            saveTasks()
         }
     }
     
     var estimatedFinishingTime: String {
-        let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
+        // Filter out completed tasks
+        let incompleteTasks = tasks.filter { !$0.completed }
+        
+        // Calculate the total time for incomplete tasks
+        let totalTimeInSeconds = incompleteTasks.reduce(0) { (result, task) -> Int in
             let time = task.timer
             return result + (time.hours * 3600 + time.minute * 60)
         }
         
+        // Calculate the estimated finishing time
         let finishingTime = Date().addingTimeInterval(TimeInterval(totalTimeInSeconds))
+        
+        // Format the finishing time as a short time string
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
         return dateFormatter.string(from: finishingTime)
     }
+
     var estimatedFinishingTimeRelative: String {
         let totalTimeInSeconds = tasks.reduce(0) { (result, task) -> Int in
             let time = task.timer
@@ -77,10 +68,23 @@ class TasksData {
         return components.joined(separator: " and ")
     }
     
-    func completeTask(in index: Int) {
-        self.tasks[index].completed = true
-        saveTasks(self.tasks)
+    //MARK: - Initializers
+    
+    init() {
+        self.tasks = persistanceManager.loadTasks() ?? []
     }
     
+    //MARK: - Logic
+    
+    mutating func completeTask(in index: Int) {
+        self.tasks[index].completed = true
+        saveTasks()
+    }
+    
+    //MARK: - Persistance
+    
+    func saveTasks() {
+        persistanceManager.saveTasks(tasks)
+    }
     
 }

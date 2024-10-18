@@ -18,36 +18,6 @@
             endingLineNumber = "160"
             landmarkName = "generateNextActivityText()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "0DE51A6A-AE64-443A-8A98-2907B49A0EAD - 197f68e2dfd97a41"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TablePractice.TimerViewModel.generateNextActivityText() -&gt; ()"
-                  moduleName = "TablePractice.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/maxiparis/Documents/Programming/TablePractice/TablePractice/viewModel/TimerViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "160"
-                  endingLineNumber = "160">
-               </Location>
-               <Location
-                  uuid = "0DE51A6A-AE64-443A-8A98-2907B49A0EAD - 197f68e2dfd97a41"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TablePractice.TimerViewModel.generateNextActivityText() -&gt; ()"
-                  moduleName = "TablePractice.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/maxiparis/Documents/Programming/TablePractice/TablePractice/viewModel/TimerViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "160"
-                  endingLineNumber = "160">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

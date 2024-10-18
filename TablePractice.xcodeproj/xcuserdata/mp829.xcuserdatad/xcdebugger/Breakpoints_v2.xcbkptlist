@@ -14,9 +14,9 @@
             filePath = "TablePractice/viewModel/TimerViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "startTimer()"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "init(model:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -24,16 +24,46 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "65BE82C6-A06A-4F21-B2F3-30C168A01DC4"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TablePractice/viewModel/TimerViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "generateCountdownString()"
-            landmarkType = "7">
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "TimerViewModel"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "65BE82C6-A06A-4F21-B2F3-30C168A01DC4 - 5b4029d051f76c56"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TablePractice.TimerViewModel.estimatedFinishingTimeRelative.getter : Swift.String"
+                  moduleName = "TablePractice.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mp829/Documents/FocusFlow/TablePractice/viewModel/TimerViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "49"
+                  endingLineNumber = "49">
+               </Location>
+               <Location
+                  uuid = "65BE82C6-A06A-4F21-B2F3-30C168A01DC4 - 5b4029d051f76fd2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TablePractice.TimerViewModel.estimatedFinishingTimeRelative.getter : Swift.String"
+                  moduleName = "TablePractice.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mp829/Documents/FocusFlow/TablePractice/viewModel/TimerViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "53"
+                  endingLineNumber = "53">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
