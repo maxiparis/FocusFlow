@@ -26,19 +26,25 @@ struct Task: Identifiable, Equatable, Decodable, Encodable {
 }
 
 struct TimeTracked: Decodable, Encodable {
+    
     var hours: Int
     var minute: Int
     var remainingTimeInSecs: TimeInterval
+    var timerState: TimerState?
     var isOverdue: Bool {
         remainingTimeInSecs == 0
     }
-    var timeExceeded: TimeInterval = 0
 
     init(hours: Int, minute: Int) {
         self.hours = hours
         self.minute = minute
         self.remainingTimeInSecs = TimeInterval((hours * 60 * 60) + (minute * 60))
     }
+}
+
+enum TimerState: Codable {
+    case exceeded(TimeInterval)
+    case saved(TimeInterval)
 }
 
 //struct SessionTask {

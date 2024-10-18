@@ -26,8 +26,28 @@ struct TasksData {
         
         // Calculate the total time for incomplete tasks
         let totalTimeInSeconds = incompleteTasks.reduce(0) { (result, task) -> Int in
-            let time = task.timer
-            return result + (time.hours * 3600 + time.minute * 60)
+            // Extract the timer from the task
+            let timer = task.timer
+            
+            var exceededTime: TimeInterval = {
+                if let timerState = timer.timerState {
+                    switch timerState {
+                        case .exceeded(let seconds):
+                            return seconds * -1
+                        default: //I only care if the current task has exceeded time
+                            return 0
+                    }
+                }
+                return 0
+            }()
+            
+            // Calculate total seconds for the current task
+            let hoursInSeconds = timer.hours * 3600
+            let minutesInSeconds = timer.minute * 60
+            let totalSecondsForTask = hoursInSeconds + minutesInSeconds + Int(exceededTime)
+            
+            // Return the accumulated result
+            return result + totalSecondsForTask
         }
         
         // Calculate the estimated finishing time

@@ -39,7 +39,21 @@ class TimerViewModel: ObservableObject {
         }
     }
     var countdownString: String? {
-        currentTask.timer.isOverdue ? formatTime(from: currentTask.timer.timeExceeded) : formatTime(from: currentTask.timer.remainingTimeInSecs)
+        if currentTask.timer.isOverdue {
+            // Unwrap the optional timerState safely
+            if let timerState = currentTask.timer.timerState {
+                switch timerState {
+                case .exceeded(let seconds):
+                    return formatTime(from: seconds)
+                default:
+                    return formatTime(from: currentTask.timer.remainingTimeInSecs)
+                }
+            } else {
+                return formatTime(from: currentTask.timer.remainingTimeInSecs)
+            }
+        } else {
+            return formatTime(from: currentTask.timer.remainingTimeInSecs)
+        }
     }
     var currentTaskIsOverdue: Bool {
         currentTask.timer.isOverdue
@@ -79,7 +93,16 @@ class TimerViewModel: ObservableObject {
             if !self.currentTask.timer.isOverdue { // we are on track
                 self.currentTask.timer.remainingTimeInSecs -= 1
             } else { // we are overdue
-                self.currentTask.timer.timeExceeded += 1
+                if let timerState = self.currentTask.timer.timerState {
+                    switch timerState {
+                    case .exceeded(let seconds):
+                        self.currentTask.timer.timerState = .exceeded(seconds + 1)
+                    case .saved:
+                        break
+                    }
+                } else {
+                    self.currentTask.timer.timerState = .exceeded(1)
+                }
             }
         }
     }
