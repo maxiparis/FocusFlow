@@ -61,7 +61,7 @@ struct TimerView: View {
         }
         .onDisappear() {
             timerVM.pauseTimer()
-            timerVM.restartCurrentTaskIndex()
+//            timerVM.restartCurrentTaskIndex()
             parentVM.markTasksAsNotCompleted()
         }
     }

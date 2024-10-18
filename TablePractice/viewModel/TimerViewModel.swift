@@ -18,9 +18,24 @@ class TimerViewModel: ObservableObject {
     
     //MARK: - Variables
     
-    @Published var tasksData: TasksData
-    @Published var tasks: [Task] = []
-    @Published var currentTaskIndex: Int?
+    @Published var tasksData: TasksData = TasksData()
+    var tasks: [Task] {
+        get {
+            tasksData.tasks
+        }
+        set {
+            tasksData.tasks = newValue
+        }
+    }
+    var currentTaskIndex: Int? {
+        if (tasks.count > 0) {
+            return tasks.firstIndex { task in
+                !task.completed
+            }
+        } else {
+            return nil
+        }
+    }
     @Published var countdownString: String = ""
     @Published var timerPaused: Bool = false
     @Published var nextActivityText: String = ""
@@ -30,20 +45,13 @@ class TimerViewModel: ObservableObject {
     var timer: Timer = Timer()
     
     //MARK: - Initializer
-
-    init(model: TasksData, isPresented: Binding<Bool>) {
-        self.tasksData = model
+    
+    init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        self.tasks = tasksData.tasks
-        if (self.tasks.count > 0) {
-            self.currentTaskIndex = 0
-        } else {
-            currentTaskIndex = nil
-        }
     }
     
     //MARK: - Model access
-
+    
     var estimatedFinishingTime: String {
         tasksData.estimatedFinishingTime
     }
@@ -57,7 +65,7 @@ class TimerViewModel: ObservableObject {
     }
     
     //MARK: - User Intents
-
+    
     func startTimer() {
         self.timerPaused = false
         self.generateCountdownString()
@@ -69,7 +77,6 @@ class TimerViewModel: ObservableObject {
                     self.saveTasksToModel()
                 } else {
                     index += 1
-                    self.currentTaskIndex = index
                     self.tasks[index].timer.remainingTimeInSecs -= 1
                     self.generateCountdownString()
                     self.saveTasksToModel()
@@ -92,32 +99,25 @@ class TimerViewModel: ObservableObject {
             self.tasks = tasksData.tasks
             
             let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-
+            
             if currentTaskIsLastOne {
                 //dismiss view
                 //tell the user how much time they saved or wasted
                 isPresented = false
-            } else {
-                self.currentTaskIndex = currentTaskIndex + 1
             }
             
             generateNextActivityText()
             self.startTimer()
-            
         }
-        
     }
     
     //MARK: - Utils
     
-    func restartCurrentTaskIndex() {
-        self.currentTaskIndex = 0
-    }
-
+    
     
     //MARK: - UI Utils
     
-        
+    
     func generateCountdownString() {
         if let index = self.currentTaskIndex {
             var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
