@@ -58,9 +58,18 @@ class TimerViewModel: ObservableObject {
     var currentTaskIsOverdue: Bool {
         currentTask.timer.isOverdue
     }
-    @Published var timerPaused: Bool = false
-    @Published var nextActivityText: String = ""
     
+    var nextActivityText: String? {
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
+        if currentTaskIsLastOne {
+            return nil
+        } else {
+            return self.tasks[currentTaskIndex+1].title
+        }
+    }
+    
+    @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
     
     var timer: Timer = Timer()
@@ -116,10 +125,11 @@ class TimerViewModel: ObservableObject {
     func completeTask() {
         self.pauseTimer()
         
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
         tasksData.completeTask(in: currentTaskIndex)
         self.tasks = tasksData.tasks
         
-        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
         
         if currentTaskIsLastOne {
             //dismiss view
@@ -127,7 +137,6 @@ class TimerViewModel: ObservableObject {
             isPresented = false
         }
         
-        generateNextActivityText()
         self.startTimer()
     }
     
@@ -148,18 +157,4 @@ class TimerViewModel: ObservableObject {
             return String(format: "%02d:%02d", minutes, seconds)
         }
     }
-    
-    func generateNextActivityText() {
-        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-        
-        if currentTaskIsLastOne {
-            self.nextActivityText = "This is your last task. "
-        } else {
-            let nextTaskTitle = self.tasks[currentTaskIndex+1].title
-            self.nextActivityText = "Next Activity: \(nextTaskTitle)."
-        }
-    }
-    
-    
-    
 }

@@ -55,13 +55,26 @@ struct TimerView: View {
                 }
             }
             
-            Text(timerVM.nextActivityText)
-            Text("Time you will be done: \(timerVM.estimatedFinishingTime)")
+            VStack {
+                if let nextActivityText = timerVM.nextActivityText {
+                    Text("Next Activity:")
+                    Text(nextActivityText)
+                        .font(.title3)
+                } else {
+                    Text("This is your last activity")
+                        .font(.title3)
+                }
+            }
+            
+            VStack {
+                Text("Time you will be done:")
+                Text(timerVM.estimatedFinishingTime)
+                    .font(.title2)
+            }
             
             Spacer()
         }.onAppear() {
             timerVM.startTimer()
-            timerVM.generateNextActivityText()
         }
         .onDisappear() {
             timerVM.pauseTimer()

@@ -13,6 +13,7 @@ struct TasksData {
     
     private var persistanceManager = PersistenceManager.shared
     
+    //Every time these tasks are set we are saving them to the UsersDefaults.
     var tasks: [Task] {
         didSet {
             print("\n\nTasks in the model was set to = \(tasks)")
