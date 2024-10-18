@@ -9,7 +9,8 @@ import SwiftUI
 
 struct TimerView: View {
     @StateObject var timerVM: TimerViewModel
-    
+    var parentVM: TasksViewModel
+
     var body: some View {
         VStack(spacing: 80) {
             if let currentTaskIndex = timerVM.currentTaskIndex {
@@ -43,30 +44,36 @@ struct TimerView: View {
                     }
                     
                     Button {
-                        //TODO
+                        timerVM.completeTask()
                     } label: {
                         ButtonImageView(systemImage: "checkmark.circle")
                     }
                 }
                 
-                Text("Next Actity: ")
-                Text("Time you will be done: ")
+                Text(timerVM.nextActivityText)
+                Text("Time you will be done: \(timerVM.estimatedFinishingTime)")
                 
                 Spacer()
             }
         }.onAppear() {
             timerVM.startTimer()
+            timerVM.generateNextActivityText()
+        }
+        .onDisappear() {
+            timerVM.pauseTimer()
+            timerVM.restartCurrentTaskIndex()
+            parentVM.markTasksAsNotCompleted()
         }
     }
 }
 
 
-#Preview {
-    let task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
-    let taskList = [task]
-    
-    TimerView(timerVM: TimerViewModel(tasks: taskList))
-}
+//#Preview {
+//    let task: Task = Task(title: "test", timer: Time(hours: 0, minute: 1))
+//    let taskList = [task]
+//    
+//    TimerView(timerVM: TimerViewModel(tasks: taskList))
+//}
 
 
 struct ButtonImageView: View {
