@@ -14,9 +14,9 @@
             filePath = "TablePractice/viewModel/TimerViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
-            landmarkName = "generateNextActivityText()"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "generateCountdownString()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
