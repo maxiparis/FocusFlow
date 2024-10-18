@@ -27,32 +27,22 @@ class TimerViewModel: ObservableObject {
             tasksData.tasks = newValue
         }
     }
-    var currentTaskIndex: Int? {
-        if (tasks.count > 0) {
-            return tasks.firstIndex { task in
-                !task.completed
-            }
-        } else {
-            return nil
-        }
+    var currentTaskIndex: Int {
+        return tasks.firstIndex { !$0.completed } ?? 0
     }
-    var currentTask: Task? {
-        if let currentTaskIndex {
-            return tasks[currentTaskIndex]
-        } else {
-            return nil
+    var currentTask: Task {
+        get {
+            tasks[currentTaskIndex]
+        }
+        set {
+            tasks[currentTaskIndex] = newValue
         }
     }
     var countdownString: String? {
-        if let currentTask {
-            if currentTask.timer.isOverdue {
-                return formatTime(from: currentTask.timer.timeExceeded)
-            } else {
-                return formatTime(from: currentTask.timer.remainingTimeInSecs)
-            }
-        } else {
-            return nil
-        }
+        currentTask.timer.isOverdue ? formatTime(from: currentTask.timer.timeExceeded) : formatTime(from: currentTask.timer.remainingTimeInSecs)
+    }
+    var currentTaskIsOverdue: Bool {
+        currentTask.timer.isOverdue
     }
     @Published var timerPaused: Bool = false
     @Published var nextActivityText: String = ""
@@ -86,12 +76,10 @@ class TimerViewModel: ObservableObject {
     func startTimer() {
         self.timerPaused = false
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            if let index = self.currentTaskIndex {
-                if !self.tasks[index].timer.isOverdue { // we are on track
-                    self.tasks[index].timer.remainingTimeInSecs -= 1
-                } else { // we are overdue
-                    self.tasks[index].timer.timeExceeded += 1
-                }
+            if !self.currentTask.timer.isOverdue { // we are on track
+                self.currentTask.timer.remainingTimeInSecs -= 1
+            } else { // we are overdue
+                self.currentTask.timer.timeExceeded += 1
             }
         }
     }
@@ -103,23 +91,21 @@ class TimerViewModel: ObservableObject {
     }
     
     func completeTask() {
-        if let currentTaskIndex {
-            self.pauseTimer()
-            
-            tasksData.completeTask(in: currentTaskIndex)
-            self.tasks = tasksData.tasks
-            
-            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-            
-            if currentTaskIsLastOne {
-                //dismiss view
-                //tell the user how much time they saved or wasted
-                isPresented = false
-            }
-            
-            generateNextActivityText()
-            self.startTimer()
+        self.pauseTimer()
+        
+        tasksData.completeTask(in: currentTaskIndex)
+        self.tasks = tasksData.tasks
+        
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
+        if currentTaskIsLastOne {
+            //dismiss view
+            //tell the user how much time they saved or wasted
+            isPresented = false
         }
+        
+        generateNextActivityText()
+        self.startTimer()
     }
     
     //MARK: - Utils
@@ -127,6 +113,7 @@ class TimerViewModel: ObservableObject {
     
     
     //MARK: - UI Utils
+    
     func formatTime(from timeInterval: TimeInterval) -> String {
         let hours = Int(timeInterval) / 3600
         let minutes = (Int(timeInterval) % 3600) / 60
@@ -138,62 +125,15 @@ class TimerViewModel: ObservableObject {
             return String(format: "%02d:%02d", minutes, seconds)
         }
     }
-
-    
-//    func generateCountdownString() {
-//        if let index = self.currentTaskIndex {
-//            var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
-//            
-//            let hours: Int = Int(remainingSecondsForString) / SECONDS_IN_HOUR
-//            remainingSecondsForString -= Double(hours * SECONDS_IN_HOUR)
-//            let minutes: Int = Int(remainingSecondsForString) / SECONDS_IN_MINUTE
-//            remainingSecondsForString -= Double(minutes * SECONDS_IN_MINUTE)
-//            
-//            let hoursText: String? = {
-//                if hours >= 10 {
-//                    return hours.description
-//                } else if hours >= 1 {
-//                    return "0\(hours.description)"
-//                } else {
-//                    return nil
-//                }
-//            }()
-//            let minutesText: String = {
-//                if minutes >= 10 {
-//                    return minutes.description
-//                } else {
-//                    return "0\(minutes.description)"
-//                }
-//            }()
-//            let secondsText: String = {
-//                if remainingSecondsForString >= 10 {
-//                    return remainingSecondsForString.description
-//                } else {
-//                    return "0\(remainingSecondsForString.description)"
-//                }
-//            }()
-//            
-//            
-//            if let hoursText = hoursText {
-//                let countdownStringWithHours = hoursText + ":" + minutesText + ":" + secondsText
-//                countdownString = countdownStringWithHours
-//            } else {
-//                let countdownStringWithoutHours = minutesText + ":" + secondsText
-//                countdownString = countdownStringWithoutHours
-//            }
-//        }
-//    }
     
     func generateNextActivityText() {
-        if let currentTaskIndex {
-            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-            
-            if currentTaskIsLastOne {
-                self.nextActivityText = "This is your last task. "
-            } else {
-                let nextTaskTitle = self.tasks[currentTaskIndex+1].title
-                self.nextActivityText = "Next Activity: \(nextTaskTitle)."
-            }
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
+        if currentTaskIsLastOne {
+            self.nextActivityText = "This is your last task. "
+        } else {
+            let nextTaskTitle = self.tasks[currentTaskIndex+1].title
+            self.nextActivityText = "Next Activity: \(nextTaskTitle)."
         }
     }
     
