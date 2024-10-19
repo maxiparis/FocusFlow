@@ -91,6 +91,9 @@ struct TimerView: View {
             //            timerVM.restartCurrentTaskIndex()
             parentVM.markTasksAsNotCompleted()
         }
+        .sheet(isPresented: $timerVM.displayReportView, content: {
+            SessionReportView(timerVM: timerVM)
+        })
     }
 }
 

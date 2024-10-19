@@ -85,6 +85,8 @@ class TimerViewModel: ObservableObject {
         
         return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
     }
+    
+    // example: 1:34:23
     var sessionTimerStateText: String {
         switch(sessionTimerState) {
         case .saved(let seconds),.exceeded(let seconds):
@@ -92,8 +94,18 @@ class TimerViewModel: ObservableObject {
         }
     }
     
+    //example: 1 hour, 5 minutes and 30 seconds
+    var sessionTimerStateWorded: String {
+        switch(sessionTimerState) {
+        case .saved(let seconds),.exceeded(let seconds):
+            formatTimeWords(from: seconds)
+        }
+    }
+    
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
+    @Published var displayReportView: Bool = false //this variable controls when the ReportView is presented.
+
     
     var timer: Timer = Timer()
     
@@ -154,9 +166,8 @@ class TimerViewModel: ObservableObject {
         
         
         if currentTaskIsLastOne {
-            //dismiss view
-            //tell the user how much time they saved or wasted
-            isPresented = false
+            displayReportView = true
+            return
         }
         
         self.startTimer()
@@ -179,4 +190,36 @@ class TimerViewModel: ObservableObject {
             return String(format: "%02d:%02d", minutes, seconds)
         }
     }
+    
+    func formatTimeWords(from timeInterval: TimeInterval) -> String {
+        let hours = Int(timeInterval) / 3600
+        let minutes = (Int(timeInterval) % 3600) / 60
+        let seconds = Int(timeInterval) % 60
+
+        var components: [String] = []
+
+        if hours > 0 {
+            components.append(hours == 1 ? "\(hours) hour" : "\(hours) hours")
+        }
+        
+        if minutes > 0 {
+            components.append(minutes == 1 ? "\(minutes) minute" : "\(minutes) minutes")
+        }
+        
+        if seconds > 0 {
+            components.append(seconds == 1 ? "\(seconds) second" : "\(seconds) seconds")
+        }
+
+        // Combine the components with appropriate separators
+        if components.count > 1 {
+            let lastComponent = components.removeLast()
+            return components.joined(separator: ", ") + ", and " + lastComponent
+        } else if let firstComponent = components.first {
+            return firstComponent
+        } else {
+            return "0 seconds"
+        }
+    }
+
+    
 }
