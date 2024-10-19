@@ -12,7 +12,7 @@ struct TimerView: View {
     var parentVM: TasksViewModel
     
     var body: some View {
-        VStack(spacing: 80) {
+        VStack(spacing: 60) {
             Spacer()
             
             Text(timerVM.currentTask.title).font(.largeTitle)
@@ -70,6 +70,16 @@ struct TimerView: View {
                 Text("Time you will be done:")
                 Text(timerVM.estimatedFinishingTime)
                     .font(.title2)
+            }
+            
+            VStack {
+                switch(timerVM.sessionTimerState) {
+                case.exceeded:
+                    Text("Time Exceeded:")
+                case .saved:
+                    Text("Time Saved:")
+                }
+                Text(timerVM.sessionTimerStateText)
             }
             
             Spacer()

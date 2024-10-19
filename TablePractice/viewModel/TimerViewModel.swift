@@ -18,7 +18,8 @@ class TimerViewModel: ObservableObject {
     
     //MARK: - Variables
     
-    @Published var tasksData: TasksData = TasksData()
+    @Published var tasksData: TasksData = TasksData() //model
+    
     var tasks: [Task] {
         get {
             tasksData.tasks
@@ -68,6 +69,28 @@ class TimerViewModel: ObservableObject {
             return self.tasks[currentTaskIndex+1].title
         }
     }
+    var sessionTimerState: TimerState {
+        let totalTimeSaveOrExceeded = tasks.reduce(0) { (result, task) in
+            if let timerState = task.timer.timerState {
+                switch(timerState) {
+                case .exceeded(let seconds):
+                    return result - seconds
+                case .saved(let seconds):
+                    return result + seconds
+                }
+            } else {
+                return result
+            }
+        }
+        
+        return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
+    }
+    var sessionTimerStateText: String {
+        switch(sessionTimerState) {
+        case .saved(let seconds),.exceeded(let seconds):
+            formatTime(from: seconds)
+        }
+    }
     
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
@@ -101,16 +124,15 @@ class TimerViewModel: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             if !self.currentTask.timer.isOverdue { // we are on track
                 self.currentTask.timer.remainingTimeInSecs -= 1
+                self.currentTask.timer.timerState = .saved(self.currentTask.timer.remainingTimeInSecs)
             } else { // we are overdue
                 if let timerState = self.currentTask.timer.timerState {
                     switch timerState {
                     case .exceeded(let seconds):
                         self.currentTask.timer.timerState = .exceeded(seconds + 1)
                     case .saved:
-                        break
+                        self.currentTask.timer.timerState = .exceeded(1)
                     }
-                } else {
-                    self.currentTask.timer.timerState = .exceeded(1)
                 }
             }
         }

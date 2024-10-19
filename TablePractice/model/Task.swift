@@ -30,7 +30,7 @@ struct TimeTracked: Decodable, Encodable {
     var hours: Int
     var minute: Int
     var remainingTimeInSecs: TimeInterval
-    var timerState: TimerState?
+    var timerState: TimerState? //if this is nil, it means we haven't started this task
     var isOverdue: Bool {
         remainingTimeInSecs == 0
     }
