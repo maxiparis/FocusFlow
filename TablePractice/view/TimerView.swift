@@ -55,6 +55,10 @@ struct TimerView: View {
                 }
             }
             
+            Button("Add Subtask") {
+                timerVM.displayAddSubtaskView = true
+            }
+            
             VStack {
                 if let nextActivityText = timerVM.nextActivityText {
                     Text("Next Activity:")
@@ -93,6 +97,9 @@ struct TimerView: View {
         }
         .sheet(isPresented: $timerVM.displayReportView, content: {
             SessionReportView(timerVM: timerVM)
+        })
+        .sheet(isPresented: $timerVM.displayAddSubtaskView, content: {
+            AddSubtaskView()
         })
     }
 }

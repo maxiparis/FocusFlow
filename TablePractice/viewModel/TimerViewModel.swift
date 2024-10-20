@@ -105,6 +105,7 @@ class TimerViewModel: ObservableObject {
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
     @Published var displayReportView: Bool = false //this variable controls when the ReportView is presented.
+    @Published var displayAddSubtaskView: Bool = false 
 
     
     var timer: Timer = Timer()

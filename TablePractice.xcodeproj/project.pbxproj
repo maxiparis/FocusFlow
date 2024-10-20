@@ -21,6 +21,7 @@
 		B2096D182CACFE580018E223 /* TasksData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D172CACFE580018E223 /* TasksData.swift */; };
 		B2096D1C2CAD02E30018E223 /* HoursMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D1B2CAD02E30018E223 /* HoursMinutes.swift */; };
 		B20AE0DE2CC33C6A00AB054D /* SessionReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */; };
+		CACD03F32CC49F5A0034A11C /* AddSubtaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACD03F22CC49F5A0034A11C /* AddSubtaskView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		B2096D172CACFE580018E223 /* TasksData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksData.swift; sourceTree = "<group>"; };
 		B2096D1B2CAD02E30018E223 /* HoursMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursMinutes.swift; sourceTree = "<group>"; };
 		B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionReportView.swift; sourceTree = "<group>"; };
+		CACD03F22CC49F5A0034A11C /* AddSubtaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSubtaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				7635C1232C29BE5300789148 /* AddView.swift */,
 				7635C12A2C2B5DC900789148 /* TimerView.swift */,
 				B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */,
+				CACD03F22CC49F5A0034A11C /* AddSubtaskView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 				7635C12D2C2B61F200789148 /* TimerViewModel.swift in Sources */,
 				765BBDBA2CC047CA0060AB07 /* PersistenceManager.swift in Sources */,
 				7635C12B2C2B5DCA00789148 /* TimerView.swift in Sources */,
+				CACD03F32CC49F5A0034A11C /* AddSubtaskView.swift in Sources */,
 				765BBDBD2CC06F6A0060AB07 /* FocusSession.swift in Sources */,
 				7635C1262C29CC4500789148 /* TasksViewModel.swift in Sources */,
 				B2096D1C2CAD02E30018E223 /* HoursMinutes.swift in Sources */,
