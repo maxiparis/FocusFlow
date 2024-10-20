@@ -34,4 +34,10 @@ class TasksViewModel: ObservableObject {
             model.tasks[i].completed = false
         }
     }
+    
+    //MARK: - User Intents
+    
+    func importDefaultTasks() {
+        model.importDefaultTasks()
+    }
 }

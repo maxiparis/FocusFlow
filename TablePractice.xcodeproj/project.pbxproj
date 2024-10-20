@@ -20,6 +20,7 @@
 		76B95A452C2620400052EA05 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76B95A442C2620400052EA05 /* Preview Assets.xcassets */; };
 		B2096D182CACFE580018E223 /* TasksData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D172CACFE580018E223 /* TasksData.swift */; };
 		B2096D1C2CAD02E30018E223 /* HoursMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D1B2CAD02E30018E223 /* HoursMinutes.swift */; };
+		B20AE0DE2CC33C6A00AB054D /* SessionReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		76B95A542C2620400052EA05 /* TablePracticeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TablePracticeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2096D172CACFE580018E223 /* TasksData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksData.swift; sourceTree = "<group>"; };
 		B2096D1B2CAD02E30018E223 /* HoursMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoursMinutes.swift; sourceTree = "<group>"; };
+		B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionReportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				76B95A3E2C26203F0052EA05 /* TasksView.swift */,
 				7635C1232C29BE5300789148 /* AddView.swift */,
 				7635C12A2C2B5DC900789148 /* TimerView.swift */,
+				B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				76B95A3F2C26203F0052EA05 /* TasksView.swift in Sources */,
 				B2096D182CACFE580018E223 /* TasksData.swift in Sources */,
 				7635C1292C29E82500789148 /* Task.swift in Sources */,
+				B20AE0DE2CC33C6A00AB054D /* SessionReportView.swift in Sources */,
 				76B95A3D2C26203F0052EA05 /* TablePracticeApp.swift in Sources */,
 				7635C1242C29BE5300789148 /* AddView.swift in Sources */,
 			);

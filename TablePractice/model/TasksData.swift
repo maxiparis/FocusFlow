@@ -13,6 +13,7 @@ struct TasksData {
     
     private var persistanceManager = PersistenceManager.shared
     
+    //Every time these tasks are set we are saving them to the UsersDefaults.
     var tasks: [Task] {
         didSet {
             print("\n\nTasks in the model was set to = \(tasks)")
@@ -26,8 +27,28 @@ struct TasksData {
         
         // Calculate the total time for incomplete tasks
         let totalTimeInSeconds = incompleteTasks.reduce(0) { (result, task) -> Int in
-            let time = task.timer
-            return result + (time.hours * 3600 + time.minute * 60)
+            // Extract the timer from the task
+            let timer = task.timer
+            
+            let exceededTime: TimeInterval = {
+                if let timerState = timer.timerState {
+                    switch timerState {
+                        case .exceeded(let seconds):
+                            return seconds
+                        default: //I only care if the current task has exceeded time
+                            return 0
+                    }
+                }
+                return 0
+            }()
+            
+            // Calculate total seconds for the current task
+            let hoursInSeconds = timer.hours * 3600
+            let minutesInSeconds = timer.minute * 60
+            let totalSecondsForTask = hoursInSeconds + minutesInSeconds + Int(exceededTime)
+            
+            // Return the accumulated result
+            return result + totalSecondsForTask
         }
         
         // Calculate the estimated finishing time
@@ -79,6 +100,20 @@ struct TasksData {
     mutating func completeTask(in index: Int) {
         self.tasks[index].completed = true
         saveTasks()
+    }
+    
+    mutating func importDefaultTasks() {
+        let tasks: [Task] = [
+            Task(title: "Take a quick break", timer: TimeTracked(hours: 0, minute: 15)),
+            Task(title: "Read news", timer: TimeTracked(hours: 0, minute: 10)),
+            Task(title: "Check emails", timer: TimeTracked(hours: 0, minute: 5)),
+            Task(title: "Finish class project", timer: TimeTracked(hours: 1, minute:0)),
+            Task(title: "Break/go on walk", timer: TimeTracked(hours: 0, minute:20)),
+            Task(title: "Finish class project", timer: TimeTracked(hours: 0, minute:30)),
+            Task(title: "Make dinner/eat", timer: TimeTracked(hours: 1, minute: 0))
+        ]
+        
+        self.tasks = tasks
     }
     
     //MARK: - Persistance

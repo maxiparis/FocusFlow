@@ -12,22 +12,22 @@ struct TasksView: View {
     @State private var displayTimerView = false
     @State private var selectedTask: Task? = nil
     
-    @StateObject private var contentVM = TasksViewModel()
+    @StateObject private var tasksVM = TasksViewModel()
     
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    if (contentVM.tasks.isEmpty) {
+                    if (tasksVM.tasks.isEmpty) {
                         Button {
                             triggerAddView()
                         } label: {
                             Label("Add a task", systemImage: "plus")
                         }
                     } else {
-                        List($contentVM.tasks, editActions: .all) { task in
+                        List($tasksVM.tasks, editActions: .all) { task in
                             NavigationLink {
-                                AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: contentVM, editing: true)
+                                AddView(selectedTask: task.wrappedValue, isPresented: $displayAddSheet, contentVM: tasksVM, editing: true)
                             } label: {
                                 let time = task.wrappedValue.timer
                                 let timeString = "\(time.hours)h \(time.minute)m"
@@ -39,23 +39,32 @@ struct TasksView: View {
                             }
                         }
                     }
+                    
+                    Button {
+                        //TODO: import a bunch of tasks for testing purposes
+                        tasksVM.importDefaultTasks()
+                        
+                    } label: {
+                        Label("Import test tasks", systemImage: "plus")
+                    }
+                    
                 } header: {
                     Text("Focus Session")
                 } footer: {
-                    if (contentVM.tasks.isEmpty) {
+                    if (tasksVM.tasks.isEmpty) {
                         Text("We will predict your finishing time when you add your first task.")
                     } else {
-                        Text("If you stick to the plan you'd be done at \(contentVM.estimatedFinishingTime), in \(contentVM.estimatedFinishingTimeRelative) ")
+                        Text("If you stick to the plan you'd be done at \(tasksVM.estimatedFinishingTime), in \(tasksVM.estimatedFinishingTimeRelative) ")
                     }
                 }
             }
             .sheet(isPresented: $displayAddSheet, content: {
-                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: contentVM, editing: false)
+                AddView(selectedTask: selectedTask, isPresented: $displayAddSheet, contentVM: tasksVM, editing: false)
             })
             .toolbar {
                 //Edit
                 ToolbarItem(placement: .topBarLeading) {
-                    EditButton().disabled(contentVM.tasks.isEmpty)
+                    EditButton().disabled(tasksVM.tasks.isEmpty)
                 }
                 
                 //Add
@@ -80,19 +89,19 @@ struct TasksView: View {
                             .padding(.vertical, 10)
                     }
                     .buttonStyle(BorderedProminentButtonStyle())
-                    .disabled(contentVM.tasks.isEmpty)
+                    .disabled(tasksVM.tasks.isEmpty)
                 }
             }
             .navigationTitle("FocusFlow")
             .navigationDestination(isPresented: $displayTimerView) {
                 TimerView(
-                    timerVM: TimerViewModel(model: contentVM.model, isPresented: $displayTimerView),
-                    parentVM: contentVM
+                    timerVM: TimerViewModel(isPresented: $displayTimerView),
+                    parentVM: tasksVM
                 )
             }
         }
         .onAppear {
-            contentVM.markTasksAsNotCompleted()
+            tasksVM.markTasksAsNotCompleted()
         }
     }
     
