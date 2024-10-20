@@ -18,32 +18,105 @@ class TimerViewModel: ObservableObject {
     
     //MARK: - Variables
     
-    @Published var tasksData: TasksData
-    @Published var tasks: [Task] = []
-    @Published var currentTaskIndex: Int?
-    @Published var countdownString: String = ""
-    @Published var timerPaused: Bool = false
-    @Published var nextActivityText: String = ""
+    @Published var tasksData: TasksData = TasksData() //model
     
+    var tasks: [Task] {
+        get {
+            tasksData.tasks
+        }
+        set {
+            tasksData.tasks = newValue
+        }
+    }
+    var currentTaskIndex: Int {
+        return tasks.firstIndex { !$0.completed } ?? 0
+    }
+    var currentTask: Task {
+        get {
+            tasks[currentTaskIndex]
+        }
+        set {
+            tasks[currentTaskIndex] = newValue
+        }
+    }
+    var countdownString: String? {
+        if currentTask.timer.isOverdue {
+            // Unwrap the optional timerState safely
+            if let timerState = currentTask.timer.timerState {
+                switch timerState {
+                case .exceeded(let seconds):
+                    return formatTime(from: seconds)
+                default:
+                    return formatTime(from: currentTask.timer.remainingTimeInSecs)
+                }
+            } else {
+                return formatTime(from: currentTask.timer.remainingTimeInSecs)
+            }
+        } else {
+            return formatTime(from: currentTask.timer.remainingTimeInSecs)
+        }
+    }
+    var currentTaskIsOverdue: Bool {
+        currentTask.timer.isOverdue
+    }
+    
+    var nextActivityText: String? {
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
+        if currentTaskIsLastOne {
+            return nil
+        } else {
+            return self.tasks[currentTaskIndex+1].title
+        }
+    }
+    var sessionTimerState: TimerState {
+        let totalTimeSaveOrExceeded = tasks.reduce(0) { (result, task) in
+            if let timerState = task.timer.timerState {
+                switch(timerState) {
+                case .exceeded(let seconds):
+                    return result - seconds
+                case .saved(let seconds):
+                    return result + seconds
+                }
+            } else {
+                return result
+            }
+        }
+        
+        return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
+    }
+    
+    // example: 1:34:23
+    var sessionTimerStateText: String {
+        switch(sessionTimerState) {
+        case .saved(let seconds),.exceeded(let seconds):
+            formatTime(from: seconds)
+        }
+    }
+    
+    //example: 1 hour, 5 minutes and 30 seconds
+    var sessionTimerStateWorded: String {
+        switch(sessionTimerState) {
+        case .saved(let seconds),.exceeded(let seconds):
+            formatTimeWords(from: seconds)
+        }
+    }
+    
+    @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
+    @Published var displayReportView: Bool = false //this variable controls when the ReportView is presented.
+
     
     var timer: Timer = Timer()
     
     //MARK: - Initializer
-
-    init(model: TasksData, isPresented: Binding<Bool>) {
-        self.tasksData = model
+    
+    init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        self.tasks = tasksData.tasks
-        if (self.tasks.count > 0) {
-            self.currentTaskIndex = 0
-        } else {
-            currentTaskIndex = nil
-        }
     }
     
     //MARK: - Model access
-
+    
     var estimatedFinishingTime: String {
         tasksData.estimatedFinishingTime
     }
@@ -57,22 +130,21 @@ class TimerViewModel: ObservableObject {
     }
     
     //MARK: - User Intents
-
+    
     func startTimer() {
         self.timerPaused = false
-        self.generateCountdownString()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if var index = self.currentTaskIndex {
-                if self.tasks[index].timer.remainingTimeInSecs > 0 {
-                    self.tasks[index].timer.remainingTimeInSecs -= 1
-                    self.generateCountdownString()
-                    self.saveTasksToModel()
-                } else {
-                    index += 1
-                    self.currentTaskIndex = index
-                    self.tasks[index].timer.remainingTimeInSecs -= 1
-                    self.generateCountdownString()
-                    self.saveTasksToModel()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            if !self.currentTask.timer.isOverdue { // we are on track
+                self.currentTask.timer.remainingTimeInSecs -= 1
+                self.currentTask.timer.timerState = .saved(self.currentTask.timer.remainingTimeInSecs)
+            } else { // we are overdue
+                if let timerState = self.currentTask.timer.timerState {
+                    switch timerState {
+                    case .exceeded(let seconds):
+                        self.currentTask.timer.timerState = .exceeded(seconds + 1)
+                    case .saved:
+                        self.currentTask.timer.timerState = .exceeded(1)
+                    }
                 }
             }
         }
@@ -85,96 +157,69 @@ class TimerViewModel: ObservableObject {
     }
     
     func completeTask() {
-        if let currentTaskIndex {
-            self.pauseTimer()
-            
-            tasksData.completeTask(in: currentTaskIndex)
-            self.tasks = tasksData.tasks
-            
-            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-
-            if currentTaskIsLastOne {
-                //dismiss view
-                //tell the user how much time they saved or wasted
-                isPresented = false
-            } else {
-                self.currentTaskIndex = currentTaskIndex + 1
-            }
-            
-            generateNextActivityText()
-            self.startTimer()
-            
+        self.pauseTimer()
+        
+        let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
+        
+        tasksData.completeTask(in: currentTaskIndex)
+        self.tasks = tasksData.tasks
+        
+        
+        if currentTaskIsLastOne {
+            displayReportView = true
+            return
         }
         
+        self.startTimer()
     }
     
     //MARK: - Utils
     
-    func restartCurrentTaskIndex() {
-        self.currentTaskIndex = 0
-    }
-
+    
     
     //MARK: - UI Utils
     
+    func formatTime(from timeInterval: TimeInterval) -> String {
+        let hours = Int(timeInterval) / 3600
+        let minutes = (Int(timeInterval) % 3600) / 60
+        let seconds = Int(timeInterval) % 60
         
-    func generateCountdownString() {
-        if let index = self.currentTaskIndex {
-            var remainingSecondsForString = tasks[index].timer.remainingTimeInSecs
-            
-            let hours: Int = remainingSecondsForString / SECONDS_IN_HOUR
-            remainingSecondsForString -= hours * SECONDS_IN_HOUR
-            let minutes: Int = remainingSecondsForString / SECONDS_IN_MINUTE
-            remainingSecondsForString -= minutes * SECONDS_IN_MINUTE
-            
-            let hoursText: String? = {
-                if hours >= 10 {
-                    return hours.description
-                } else if hours >= 1 {
-                    return "0\(hours.description)"
-                } else {
-                    return nil
-                }
-            }()
-            let minutesText: String = {
-                if minutes >= 10 {
-                    return minutes.description
-                } else {
-                    return "0\(minutes.description)"
-                }
-            }()
-            let secondsText: String = {
-                if remainingSecondsForString >= 10 {
-                    return remainingSecondsForString.description
-                } else {
-                    return "0\(remainingSecondsForString.description)"
-                }
-            }()
-            
-            
-            if let hoursText = hoursText {
-                let countdownStringWithHours = hoursText + ":" + minutesText + ":" + secondsText
-                countdownString = countdownStringWithHours
-            } else {
-                let countdownStringWithoutHours = minutesText + ":" + secondsText
-                countdownString = countdownStringWithoutHours
-            }
+        if hours > 0 {
+            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        } else {
+            return String(format: "%02d:%02d", minutes, seconds)
         }
     }
     
-    func generateNextActivityText() {
-        if let currentTaskIndex {
-            let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
-            
-            if currentTaskIsLastOne {
-                self.nextActivityText = "This is your last task. "
-            } else {
-                let nextTaskTitle = self.tasks[currentTaskIndex+1].title
-                self.nextActivityText = "Next Activity: \(nextTaskTitle)."
-            }
+    func formatTimeWords(from timeInterval: TimeInterval) -> String {
+        let hours = Int(timeInterval) / 3600
+        let minutes = (Int(timeInterval) % 3600) / 60
+        let seconds = Int(timeInterval) % 60
+
+        var components: [String] = []
+
+        if hours > 0 {
+            components.append(hours == 1 ? "\(hours) hour" : "\(hours) hours")
+        }
+        
+        if minutes > 0 {
+            components.append(minutes == 1 ? "\(minutes) minute" : "\(minutes) minutes")
+        }
+        
+        if seconds > 0 {
+            components.append(seconds == 1 ? "\(seconds) second" : "\(seconds) seconds")
+        }
+
+        // Combine the components with appropriate separators
+        if components.count > 1 {
+            let lastComponent = components.removeLast()
+            return components.joined(separator: ", ") + ", and " + lastComponent
+        } else if let firstComponent = components.first {
+            return firstComponent
+        } else {
+            return "0 seconds"
         }
     }
-    
-    
+
     
 }

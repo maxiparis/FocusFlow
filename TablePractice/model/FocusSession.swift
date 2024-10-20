@@ -13,7 +13,7 @@ struct FocusSession {
     
     private var persistanceManager = PersistenceManager.shared
     
-    var sessionTasks: [SessionTask]
+//    var sessionTasks: [SessionTask]
     var currentTaskIndex: Int
     var timeSaved: Int {
         return 0 //TODO

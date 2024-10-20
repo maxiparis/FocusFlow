@@ -96,9 +96,9 @@ struct AddView: View {
                     Button {
                         if let task = selectedTask,
                            let index = contentVM.tasks.firstIndex(of: task) {
-                            contentVM.tasks[index] = Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute))
+                            contentVM.tasks[index] = Task(title: activityName, timer: TimeTracked(hours: selectedHour, minute: selectedMinute))
                         } else {
-                            contentVM.tasks.append(Task(title: activityName, timer: Time(hours: selectedHour, minute: selectedMinute)))
+                            contentVM.tasks.append(Task(title: activityName, timer: TimeTracked(hours: selectedHour, minute: selectedMinute)))
                         }
                         self.isPresented = false
                         dismiss()
