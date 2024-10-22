@@ -27,12 +27,30 @@ struct TimerView: View {
             }
             
             HStack(spacing: 20) {
-                Button {
-                    //TODO
+                
+                //Add time
+                Menu {
+                    Section {
+                        Text("Add time")
+                            .font(.title2)
+                    }
+                    
+                    Section() {
+                        Button("+ 1 minute") {
+                            timerVM.addTime(.oneMinute)
+                        }
+                        Button("+ 5 minutes") {
+                            timerVM.addTime(.fiveMinutes)
+                        }
+                        Button("+ 10 minutes") {
+                            timerVM.addTime(.tenMinutes)
+                        }
+                    }
                 } label: {
                     ButtonImageView(systemImage: "plus.circle")
                 }
                 
+                //Pause/Resume
                 Button {
                     if (timerVM.timerPaused) {
                         timerVM.startTimer()
@@ -48,8 +66,11 @@ struct TimerView: View {
                     }
                 }
                 
+                //Complete
                 Button {
-                    timerVM.completeTask()
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        timerVM.completeTask()
+                    }
                 } label: {
                     ButtonImageView(systemImage: "checkmark.circle")
                 }

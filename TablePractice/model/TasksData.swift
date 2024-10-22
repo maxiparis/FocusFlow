@@ -43,12 +43,12 @@ struct TasksData {
             }()
             
             // Calculate total seconds for the current task
-            let hoursInSeconds = timer.hours * 3600
-            let minutesInSeconds = timer.minute * 60
-            let totalSecondsForTask = hoursInSeconds + minutesInSeconds + Int(exceededTime)
+//            let hoursInSeconds = timer.hours * 3600
+//            let minutesInSeconds = timer.minute * 60
+            let totalSecondsForTask = timer.remainingTimeInSecs + exceededTime
             
             // Return the accumulated result
-            return result + totalSecondsForTask
+            return result + Int(totalSecondsForTask)
         }
         
         // Calculate the estimated finishing time
@@ -99,7 +99,11 @@ struct TasksData {
     
     mutating func completeTask(in index: Int) {
         self.tasks[index].completed = true
-        saveTasks()
+    }
+    
+    mutating func addMinutesToTask(minutes: AddMinutes, at index: Int) {
+        //Add the time here.
+        self.tasks[index].timer.remainingTimeInSecs += Double(minutes.rawValue) * 60
     }
     
     mutating func importDefaultTasks() {

@@ -13,6 +13,11 @@ import SwiftUI
 private let SECONDS_IN_MINUTE = 60
 private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 
+enum AddMinutes: Int {
+    case oneMinute = 1
+    case fiveMinutes = 5
+    case tenMinutes = 10
+}
 
 class TimerViewModel: ObservableObject {
     
@@ -106,7 +111,6 @@ class TimerViewModel: ObservableObject {
     @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
     @Published var displayReportView: Bool = false //this variable controls when the ReportView is presented.
 
-    
     var timer: Timer = Timer()
     
     //MARK: - Initializer
@@ -173,6 +177,10 @@ class TimerViewModel: ObservableObject {
         self.startTimer()
     }
     
+    func addTime(_ minutes: AddMinutes) {
+        tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
+    }
+    
     //MARK: - Utils
     
     
@@ -220,6 +228,4 @@ class TimerViewModel: ObservableObject {
             return "0 seconds"
         }
     }
-
-    
 }
