@@ -72,15 +72,16 @@ struct TasksView: View {
                     }
                     
                     //Delete all tasks
-                    Button {
-                        withAnimation(.smooth) {
-                            tasksVM.clearAllTasks()
+                    if !tasksVM.tasks.isEmpty {
+                        Button {
+                            withAnimation(.smooth) {
+                                tasksVM.clearAllTasks()
+                            }
+                        } label: {
+                            Label("Clear all tasks", systemImage: "trash")
+                                .foregroundStyle(.red)
                         }
-                    } label: {
-                        Label("Clear all tasks", systemImage: "trash")
-                            .tint(.red)
                     }
-                    .disabled(tasksVM.tasks.isEmpty)
                 }
             }
             .sheet(isPresented: $displayAddSheet, content: {
@@ -113,6 +114,7 @@ struct TasksView: View {
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                     }
+                    .padding(.bottom, 20)
                     .buttonStyle(BorderedProminentButtonStyle())
                     .disabled(tasksVM.tasks.isEmpty)
                 }
