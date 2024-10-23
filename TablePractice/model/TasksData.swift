@@ -120,6 +120,10 @@ struct TasksData {
         self.tasks = tasks
     }
     
+    mutating func clearAllTasks() {
+        tasks.removeAll()
+    }
+    
     //MARK: - Persistance
     
     func saveTasks() {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import EventKit
 
 struct TasksView: View {
     @State private var displayAddSheet = false
@@ -40,14 +41,6 @@ struct TasksView: View {
                         }
                     }
                     
-                    Button {
-                        //TODO: import a bunch of tasks for testing purposes
-                        tasksVM.importDefaultTasks()
-                        
-                    } label: {
-                        Label("Import test tasks", systemImage: "plus")
-                    }
-                    
                 } header: {
                     Text("Focus Session")
                 } footer: {
@@ -56,6 +49,38 @@ struct TasksView: View {
                     } else {
                         Text("If you stick to the plan you'd be done at \(tasksVM.estimatedFinishingTime), in \(tasksVM.estimatedFinishingTimeRelative) ")
                     }
+                }
+                
+                Section {
+                    // Test tasks
+                    Button {
+                        withAnimation(.smooth) {
+                            tasksVM.importDefaultTasks()
+                        }
+                    } label: {
+                        Label("Import test tasks", systemImage: "square.and.arrow.down")
+                    }
+                    
+                    
+                    //Import tasks from calendar
+                    Button {
+                        withAnimation(.smooth(duration: 0.3)) {
+                            tasksVM.fetchEvents()
+                        }
+                    } label: {
+                        Label("Import tasks from calendar", systemImage: "calendar")
+                    }
+                    
+                    //Delete all tasks
+                    Button {
+                        withAnimation(.smooth) {
+                            tasksVM.clearAllTasks()
+                        }
+                    } label: {
+                        Label("Clear all tasks", systemImage: "trash")
+                            .tint(.red)
+                    }
+                    .disabled(tasksVM.tasks.isEmpty)
                 }
             }
             .sheet(isPresented: $displayAddSheet, content: {
