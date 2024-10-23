@@ -47,23 +47,7 @@ struct TimerView: View {
                         }
                     }
                 } label: {
-                    ButtonImageView(systemImage: "plus.circle")
-                }
-                
-                //Pause/Resume
-                Button {
-                    if (timerVM.timerPaused) {
-                        timerVM.startTimer()
-                    } else {
-                        timerVM.pauseTimer()
-                    }
-                    print("button tapped")
-                } label: {
-                    if (timerVM.timerPaused) {
-                        ButtonImageView(systemImage: "play.circle")
-                    } else {
-                        ButtonImageView(systemImage: "pause.circle")
-                    }
+                    ButtonImageViewSecondary(systemImage: "plus.circle")
                 }
                 
                 //Complete
@@ -73,6 +57,21 @@ struct TimerView: View {
                     }
                 } label: {
                     ButtonImageView(systemImage: "checkmark.circle")
+                }
+                
+                //Pause/Resume
+                Button {
+                    if (timerVM.timerPaused) {
+                        timerVM.startTimer()
+                    } else {
+                        timerVM.pauseTimer()
+                    }
+                } label: {
+                    if (timerVM.timerPaused) {
+                        ButtonImageViewSecondary(systemImage: "play.circle")
+                    } else {
+                        ButtonImageViewSecondary(systemImage: "pause.circle")
+                    }
                 }
             }
             
@@ -131,8 +130,18 @@ struct ButtonImageView: View {
     var systemImage: String
     var body: some View {
         Image(systemName: systemImage)
-            .font(.system(size: 75))
+            .font(.system(size: 85))
             .foregroundColor(.blue)
+            .fontWeight(.thin)
+    }
+}
+
+struct ButtonImageViewSecondary: View {
+    var systemImage: String
+    var body: some View {
+        Image(systemName: systemImage)
+            .font(.system(size: 70))
+            .foregroundColor(.blue.opacity(0.8))
             .fontWeight(.thin)
     }
 }
