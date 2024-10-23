@@ -27,31 +27,51 @@ struct TimerView: View {
             }
             
             HStack(spacing: 20) {
-                Button {
-                    //TODO
+                
+                //Add time
+                Menu {
+                    Section {
+                        Text("Add time")
+                            .font(.title2)
+                    }
+                    
+                    Section() {
+                        Button("+ 1 minute") {
+                            timerVM.addTime(.oneMinute)
+                        }
+                        Button("+ 5 minutes") {
+                            timerVM.addTime(.fiveMinutes)
+                        }
+                        Button("+ 10 minutes") {
+                            timerVM.addTime(.tenMinutes)
+                        }
+                    }
                 } label: {
-                    ButtonImageView(systemImage: "plus.circle")
+                    ButtonImageViewSecondary(systemImage: "plus.circle")
                 }
                 
+                //Complete
+                Button {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        timerVM.completeTask()
+                    }
+                } label: {
+                    ButtonImageView(systemImage: "checkmark.circle")
+                }
+                
+                //Pause/Resume
                 Button {
                     if (timerVM.timerPaused) {
                         timerVM.startTimer()
                     } else {
                         timerVM.pauseTimer()
                     }
-                    print("button tapped")
                 } label: {
                     if (timerVM.timerPaused) {
-                        ButtonImageView(systemImage: "play.circle")
+                        ButtonImageViewSecondary(systemImage: "play.circle")
                     } else {
-                        ButtonImageView(systemImage: "pause.circle")
+                        ButtonImageViewSecondary(systemImage: "pause.circle")
                     }
-                }
-                
-                Button {
-                    timerVM.completeTask()
-                } label: {
-                    ButtonImageView(systemImage: "checkmark.circle")
                 }
             }
             
@@ -110,8 +130,18 @@ struct ButtonImageView: View {
     var systemImage: String
     var body: some View {
         Image(systemName: systemImage)
-            .font(.system(size: 75))
+            .font(.system(size: 85))
             .foregroundColor(.blue)
+            .fontWeight(.thin)
+    }
+}
+
+struct ButtonImageViewSecondary: View {
+    var systemImage: String
+    var body: some View {
+        Image(systemName: systemImage)
+            .font(.system(size: 70))
+            .foregroundColor(.blue.opacity(0.8))
             .fontWeight(.thin)
     }
 }
