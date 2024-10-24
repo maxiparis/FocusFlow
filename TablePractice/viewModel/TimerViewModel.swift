@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 import UserNotifications
+import UIKit
 
 private let SECONDS_IN_MINUTE = 60
 private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
@@ -162,8 +163,6 @@ class TimerViewModel: ObservableObject {
     func pauseTimer() {
         timer.invalidate()
         timerPaused = true
-        
-        // Cancel notifications when the timer is paused
         cancelNotifications(for: currentTask)
     }
     
@@ -181,10 +180,13 @@ class TimerViewModel: ObservableObject {
         }
         
         self.startTimer()
+        cancelNotifications(for: currentTask)
     }
     
     func addTime(_ minutes: AddMinutes) {
         tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
+        cancelNotifications(for: currentTask)
+        scheduleExpirationNotifications(task: currentTask)
     }
     
     // MARK: - Notification Management
@@ -192,43 +194,36 @@ class TimerViewModel: ObservableObject {
     func scheduleExpirationNotifications(task: Task) {
         let center = UNUserNotificationCenter.current()
         
-        if let dueDate = task.timer.dueDate {
-            let preExpirationDate = Calendar.current.date(byAdding: .minute, value: -5, to: dueDate)
-            
-            // Pre-expiration notification
-            let preExpirationContent = UNMutableNotificationContent()
-            preExpirationContent.title = "Task Expiring Soon"
-            preExpirationContent.body = "Your task \"\(task.title)\" is expiring in 5 minutes."
-            preExpirationContent.sound = .default
-            
-            if let preExpirationDate = preExpirationDate {
-            let preExpirationTrigger = UNCalendarNotificationTrigger(
-                dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: preExpirationDate),
-                repeats: false
-            )
-            let preExpirationRequest = UNNotificationRequest(identifier: "preExpiration-\(task.id)", content: preExpirationContent, trigger: preExpirationTrigger)
-            center.add(preExpirationRequest)
-        }
+//        // Pre-expiration notification
+//        guard task.timer.isOverdue else { return }
+//        
+//        if task.timer.remainingTimeInSecs > 300 {
+//            let preExpirationContent = UNMutableNotificationContent()
+//            preExpirationContent.title = "Task Expiring Soon"
+//            preExpirationContent.body = "Your task \"\(task.title)\" is expiring in 5 minutes."
+//            preExpirationContent.sound = .default
+//            
+//            let preExpirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer, repeats: false)
+//            let preExpirationRequest = UNNotificationRequest(identifier: "preExpiration-\(task.id)", content: preExpirationContent, trigger: preExpirationTrigger)
+//            center.add(preExpirationRequest)
+//        }
         
         // Expiration notification
-            let expirationContent = UNMutableNotificationContent()
-            expirationContent.title = "Task Expired"
-            expirationContent.body = "Your task \"\(task.title)\" has expired."
-            expirationContent.sound = .default
-            
-            let expirationTrigger = UNCalendarNotificationTrigger(
-                dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: dueDate),
-                repeats: false
-            )
-            let expirationRequest = UNNotificationRequest(identifier: "expiration-\(task.id)", content: expirationContent, trigger: expirationTrigger)
-            center.add(expirationRequest)
-            print("expiration notifications set")
-        }
+        let expirationContent = UNMutableNotificationContent()
+        expirationContent.title = "Task Expired"
+        expirationContent.body = "Your task \"\(task.title)\" has expired."
+        expirationContent.sound = .default
+        
+        let expirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer.remainingTimeInSecs, repeats: false)
+        let expirationRequest = UNNotificationRequest(identifier: "expiration-\(task.id)", content: expirationContent, trigger: expirationTrigger)
+        center.add(expirationRequest)
+        print("expiration notifications set")
     }
     
     func cancelNotifications(for task: Task) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: ["preExpiration-\(task.id)", "expiration-\(task.id)"])
+        print("removed notifications")
     }
     
     // MARK: - Utils
@@ -275,3 +270,19 @@ class TimerViewModel: ObservableObject {
     }
 }
 
+// AppDelegate.swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Here we actually handle the notification
+        print("Notification received with identifier \(notification.request.identifier)")
+        // So we call the completionHandler telling that the notification should display a banner and play the notification sound - this will happen while the app is in foreground
+        completionHandler([.banner, .sound])
+    }
+}

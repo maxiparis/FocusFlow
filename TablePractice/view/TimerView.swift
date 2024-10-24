@@ -110,11 +110,11 @@ struct TimerView: View {
         .onAppear() {
             requestNotificationPermission() // Request notification permission on view load
             timerVM.startTimer()
-            timerVM.scheduleExpirationNotifications(task: timerVM.currentTask) // Schedule notifications on start
         }
         .onDisappear() {
             timerVM.pauseTimer()
             parentVM.markTasksAsNotCompleted()
+            timerVM.cancelNotifications(for: timerVM.currentTask)
         }
         .sheet(isPresented: $timerVM.displayReportView, content: {
             SessionReportView(timerVM: timerVM)
