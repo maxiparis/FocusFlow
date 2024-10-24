@@ -272,3 +272,4 @@ class TimerViewModel: ObservableObject {
         }
     }
 }
+
