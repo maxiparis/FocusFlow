@@ -16,7 +16,7 @@ struct TasksData {
     //Every time these tasks are set we are saving them to the UsersDefaults.
     var tasks: [Task] {
         didSet {
-            print("\n\nTasks in the model was set to = \(tasks)")
+//            print("\n\nTasks in the model was set to = \(tasks)")
             saveTasks()
         }
     }
@@ -56,9 +56,9 @@ struct TasksData {
         
         // Format the finishing time as a short time string
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .none
-        dateFormatter.timeStyle = .short
+        dateFormatter.dateFormat = "h:mm a"
         return dateFormatter.string(from: finishingTime)
+
     }
 
     var estimatedFinishingTimeRelative: String {
@@ -108,13 +108,12 @@ struct TasksData {
     
     mutating func importDefaultTasks() {
         let tasks: [Task] = [
-            Task(title: "Take a quick break", timer: TimeTracked(hours: 0, minute: 15)),
-            Task(title: "Read news", timer: TimeTracked(hours: 0, minute: 10)),
-            Task(title: "Check emails", timer: TimeTracked(hours: 0, minute: 5)),
-            Task(title: "Finish class project", timer: TimeTracked(hours: 1, minute:0)),
-            Task(title: "Break/go on walk", timer: TimeTracked(hours: 0, minute:20)),
-            Task(title: "Finish class project", timer: TimeTracked(hours: 0, minute:30)),
-            Task(title: "Make dinner/eat", timer: TimeTracked(hours: 1, minute: 0))
+            Task(title: "Arrive home/unwind", timer: TimeTracked(hours: 0, minute: 15)),
+            Task(title: "Quick snack", timer: TimeTracked(hours: 0, minute: 10)),
+            Task(title: "Complete CS 340 homework", timer: TimeTracked(hours: 1, minute: 0)),
+            Task(title: "Break/exercise", timer: TimeTracked(hours: 0, minute: 15)),
+            Task(title: "Work on HIST201 paper", timer: TimeTracked(hours: 0, minute: 45)),
+            Task(title: "Dinner/relax", timer: TimeTracked(hours: 0, minute: 35))
         ]
         
         self.tasks = tasks
