@@ -11,14 +11,12 @@ struct Task: Identifiable, Equatable, Decodable, Encodable {
     var id = UUID()
     var title: String
     var timer: TimeTracked
-    var dueDate: Date // Add this line
     var completed: Bool = false
     
     // Update the initializer to include dueDate
-    init(title: String, hours: Int, minutes: Int, dueDate: Date) {
+    init(title: String, timer: TimeTracked) {
         self.title = title
-        self.timer = TimeTracked(hours: hours, minute: minutes)
-        self.dueDate = dueDate
+        self.timer = timer
     }
 
     static func == (lhs: Task, rhs: Task) -> Bool {
@@ -41,7 +39,14 @@ struct TimeTracked: Decodable, Encodable {
     var isOverdue: Bool {
         remainingTimeInSecs == 0
     }
-
+    var dueDate: Date? {
+        if isOverdue {
+            return nil
+        } else {
+            return Date().addingTimeInterval(remainingTimeInSecs)
+        }
+    }
+    
     init(hours: Int, minute: Int) {
         self.hours = hours
         self.minute = minute
@@ -53,12 +58,3 @@ enum TimerState: Codable {
     case exceeded(TimeInterval)
     case saved(TimeInterval)
 }
-
-//struct SessionTask {
-//    var task: Task
-//    var totalFinishingTime: TimeTracked
-//    var isCompleted: Bool {
-//        task.completed
-//    }
-//}
-
