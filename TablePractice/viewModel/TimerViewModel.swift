@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Observation
 import Combine
 import SwiftUI
+import UserNotifications
 
 private let SECONDS_IN_MINUTE = 60
 private let SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
@@ -21,7 +21,7 @@ enum AddMinutes: Int {
 
 class TimerViewModel: ObservableObject {
     
-    //MARK: - Variables
+    // MARK: - Variables
     
     @Published var tasksData: TasksData = TasksData() //model
     
@@ -33,9 +33,11 @@ class TimerViewModel: ObservableObject {
             tasksData.tasks = newValue
         }
     }
+    
     var currentTaskIndex: Int {
         return tasks.firstIndex { !$0.completed } ?? 0
     }
+    
     var currentTask: Task {
         get {
             tasks[currentTaskIndex]
@@ -44,9 +46,9 @@ class TimerViewModel: ObservableObject {
             tasks[currentTaskIndex] = newValue
         }
     }
+    
     var countdownString: String? {
         if currentTask.timer.isOverdue {
-            // Unwrap the optional timerState safely
             if let timerState = currentTask.timer.timerState {
                 switch timerState {
                 case .exceeded(let seconds):
@@ -61,6 +63,7 @@ class TimerViewModel: ObservableObject {
             return formatTime(from: currentTask.timer.remainingTimeInSecs)
         }
     }
+    
     var currentTaskIsOverdue: Bool {
         currentTask.timer.isOverdue
     }
@@ -71,9 +74,10 @@ class TimerViewModel: ObservableObject {
         if currentTaskIsLastOne {
             return nil
         } else {
-            return self.tasks[currentTaskIndex+1].title
+            return self.tasks[currentTaskIndex + 1].title
         }
     }
+    
     var sessionTimerState: TimerState {
         let totalTimeSaveOrExceeded = tasks.reduce(0) { (result, task) in
             if let timerState = task.timer.timerState {
@@ -91,35 +95,33 @@ class TimerViewModel: ObservableObject {
         return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
     }
     
-    // example: 1:34:23
     var sessionTimerStateText: String {
         switch(sessionTimerState) {
-        case .saved(let seconds),.exceeded(let seconds):
-            formatTime(from: seconds)
+        case .saved(let seconds), .exceeded(let seconds):
+            return formatTime(from: seconds)
         }
     }
     
-    //example: 1 hour, 5 minutes and 30 seconds
     var sessionTimerStateWorded: String {
         switch(sessionTimerState) {
-        case .saved(let seconds),.exceeded(let seconds):
-            formatTimeWords(from: seconds)
+        case .saved(let seconds), .exceeded(let seconds):
+            return formatTimeWords(from: seconds)
         }
     }
     
     @Published var timerPaused: Bool = false
-    @Binding var isPresented: Bool //this variable controls when the TimerView is presented.
-    @Published var displayReportView: Bool = false //this variable controls when the ReportView is presented.
-
+    @Binding var isPresented: Bool
+    @Published var displayReportView: Bool = false
+    
     var timer: Timer = Timer()
     
-    //MARK: - Initializer
+    // MARK: - Initializer
     
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
     }
     
-    //MARK: - Model access
+    // MARK: - Model access
     
     var estimatedFinishingTime: String {
         tasksData.estimatedFinishingTime
@@ -133,15 +135,15 @@ class TimerViewModel: ObservableObject {
         self.tasksData.tasks = self.tasks
     }
     
-    //MARK: - User Intents
+    // MARK: - User Intents
     
     func startTimer() {
         self.timerPaused = false
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            if !self.currentTask.timer.isOverdue { // we are on track
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if !self.currentTask.timer.isOverdue {
                 self.currentTask.timer.remainingTimeInSecs -= 1
                 self.currentTask.timer.timerState = .saved(self.currentTask.timer.remainingTimeInSecs)
-            } else { // we are overdue
+            } else {
                 if let timerState = self.currentTask.timer.timerState {
                     switch timerState {
                     case .exceeded(let seconds):
@@ -152,12 +154,17 @@ class TimerViewModel: ObservableObject {
                 }
             }
         }
+        
+        // Schedule notifications when the timer starts
+        scheduleExpirationNotifications(task: currentTask)
     }
-    
     
     func pauseTimer() {
         timer.invalidate()
         timerPaused = true
+        
+        // Cancel notifications when the timer is paused
+        cancelNotifications(for: currentTask)
     }
     
     func completeTask() {
@@ -167,7 +174,6 @@ class TimerViewModel: ObservableObject {
         
         tasksData.completeTask(in: currentTaskIndex)
         self.tasks = tasksData.tasks
-        
         
         if currentTaskIsLastOne {
             displayReportView = true
@@ -181,11 +187,49 @@ class TimerViewModel: ObservableObject {
         tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
     }
     
-    //MARK: - Utils
+    // MARK: - Notification Management
     
+    func scheduleExpirationNotifications(task: Task) {
+        let center = UNUserNotificationCenter.current()
+        
+        let dueDate = task.dueDate
+        let preExpirationDate = Calendar.current.date(byAdding: .minute, value: -5, to: dueDate)
+        
+        // Pre-expiration notification
+        let preExpirationContent = UNMutableNotificationContent()
+        preExpirationContent.title = "Task Expiring Soon"
+        preExpirationContent.body = "Your task \"\(task.title)\" is expiring in 5 minutes."
+        preExpirationContent.sound = .default
+        
+        if let preExpirationDate = preExpirationDate {
+            let preExpirationTrigger = UNCalendarNotificationTrigger(
+                dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: preExpirationDate),
+                repeats: false
+            )
+            let preExpirationRequest = UNNotificationRequest(identifier: "preExpiration-\(task.id)", content: preExpirationContent, trigger: preExpirationTrigger)
+            center.add(preExpirationRequest)
+        }
+        
+        // Expiration notification
+        let expirationContent = UNMutableNotificationContent()
+        expirationContent.title = "Task Expired"
+        expirationContent.body = "Your task \"\(task.title)\" has expired."
+        expirationContent.sound = .default
+        
+        let expirationTrigger = UNCalendarNotificationTrigger(
+            dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: dueDate),
+            repeats: false
+        )
+        let expirationRequest = UNNotificationRequest(identifier: "expiration-\(task.id)", content: expirationContent, trigger: expirationTrigger)
+        center.add(expirationRequest)
+    }
     
+    func cancelNotifications(for task: Task) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["preExpiration-\(task.id)", "expiration-\(task.id)"])
+    }
     
-    //MARK: - UI Utils
+    // MARK: - Utils
     
     func formatTime(from timeInterval: TimeInterval) -> String {
         let hours = Int(timeInterval) / 3600
@@ -203,9 +247,9 @@ class TimerViewModel: ObservableObject {
         let hours = Int(timeInterval) / 3600
         let minutes = (Int(timeInterval) % 3600) / 60
         let seconds = Int(timeInterval) % 60
-
+        
         var components: [String] = []
-
+        
         if hours > 0 {
             components.append(hours == 1 ? "\(hours) hour" : "\(hours) hours")
         }
@@ -217,8 +261,7 @@ class TimerViewModel: ObservableObject {
         if seconds > 0 {
             components.append(seconds == 1 ? "\(seconds) second" : "\(seconds) seconds")
         }
-
-        // Combine the components with appropriate separators
+        
         if components.count > 1 {
             let lastComponent = components.removeLast()
             return components.joined(separator: ", ") + ", and " + lastComponent
