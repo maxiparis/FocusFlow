@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct TimerView: View {
     @StateObject var timerVM: TimerViewModel
@@ -28,7 +29,7 @@ struct TimerView: View {
             
             HStack(spacing: 20) {
                 
-                //Add time
+                // Add time
                 Menu {
                     Section {
                         Text("Add time")
@@ -50,19 +51,21 @@ struct TimerView: View {
                     ButtonImageViewSecondary(systemImage: "plus.circle")
                 }
                 
-                //Complete
+                // Complete
                 Button {
                     withAnimation(.easeInOut(duration: 0.25)) {
                         timerVM.completeTask()
+                        timerVM.cancelNotifications(for: timerVM.currentTask) // Cancel notifications when the task is completed
                     }
                 } label: {
                     ButtonImageView(systemImage: "checkmark.circle")
                 }
                 
-                //Pause/Resume
+                // Pause/Resume
                 Button {
                     if (timerVM.timerPaused) {
                         timerVM.startTimer()
+                        timerVM.scheduleExpirationNotifications(task: timerVM.currentTask) // Schedule notifications when the timer starts
                     } else {
                         timerVM.pauseTimer()
                     }
@@ -94,7 +97,7 @@ struct TimerView: View {
             
             VStack {
                 switch(timerVM.sessionTimerState) {
-                case.exceeded:
+                case .exceeded:
                     Text("Time Exceeded:")
                 case .saved:
                     Text("Time Saved:")
@@ -103,28 +106,36 @@ struct TimerView: View {
             }
             
             Spacer()
-        }.onAppear() {
+        }
+        .onAppear() {
+            requestNotificationPermission() // Request notification permission on view load
             timerVM.startTimer()
         }
         .onDisappear() {
             timerVM.pauseTimer()
-            //            timerVM.restartCurrentTaskIndex()
             parentVM.markTasksAsNotCompleted()
+            timerVM.cancelNotifications(for: timerVM.currentTask)
         }
         .sheet(isPresented: $timerVM.displayReportView, content: {
             SessionReportView(timerVM: timerVM)
         })
     }
+    
+    // Request notification permission function
+    func requestNotificationPermission() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Permission granted")
+            } else {
+                print("Permission denied")
+            }
+        }
+    }
 }
 
 
-//#Preview {
-//    let task: Task = Task(title: "test", timer: TimeTracked(hours: 0, minute: 1))
-//    let taskList = [task]
-//
-//    TimerView(timerVM: TimerViewModel(isPresented: .constant(true)), parentVM: TasksViewModel())
-//}
-
+// Supporting button views
 
 struct ButtonImageView: View {
     var systemImage: String
@@ -145,3 +156,4 @@ struct ButtonImageViewSecondary: View {
             .fontWeight(.thin)
     }
 }
+
