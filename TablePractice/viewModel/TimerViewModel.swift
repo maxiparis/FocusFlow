@@ -136,6 +136,19 @@ class TimerViewModel: ObservableObject {
         self.tasksData.tasks = self.tasks
     }
     
+    // MARK: - Logic
+    
+    func recalculateTimer() {
+        if let lastBackgroundDate = PersistenceManager.shared.lastBackgroundDate {
+            print("Seconds gone: \(Date().timeIntervalSince(lastBackgroundDate))")
+        }
+    }
+    
+    func saveBackgroundDate() {
+        PersistenceManager.shared.lastBackgroundDate = Date()
+        print("\(PersistenceManager.shared.lastBackgroundDate)")
+    }
+    
     // MARK: - User Intents
     
     func startTimer() {

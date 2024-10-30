@@ -9,6 +9,7 @@ import Foundation
 
 
 private let TASKS_KEY = "tasksArrayKey"
+private let LAST_BACKGROUND_DATE_KEY = "lastBackgroundDateKey"
 
 class PersistenceManager {
     
@@ -17,6 +18,11 @@ class PersistenceManager {
     static let shared = PersistenceManager()
     
     private var defaults = UserDefaults.standard
+    
+    var lastBackgroundDate: Date? {
+        get { defaults.object(forKey: LAST_BACKGROUND_DATE_KEY) as? Date }
+        set { defaults.set(newValue, forKey: LAST_BACKGROUND_DATE_KEY) }
+    }
     
     // MARK: - Private initializer
     
