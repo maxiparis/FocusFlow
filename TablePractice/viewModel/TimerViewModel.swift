@@ -109,7 +109,7 @@ class TimerViewModel: ObservableObject {
             return formatTimeWords(from: seconds)
         }
     }
-    private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not. 
+    private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not.
     
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool
