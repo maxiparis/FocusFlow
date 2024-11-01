@@ -47,9 +47,10 @@ struct TimeTracked: Decodable, Encodable {
         }
     }
     
-    init(hours: Int, minute: Int) {
+    init(hours: Int, minute: Int, timerState: TimerState? = nil) {
         self.hours = hours
         self.minute = minute
+        self.timerState = timerState
         self.remainingTimeInSecs = TimeInterval((hours * 60 * 60) + (minute * 60))
     }
 }

@@ -109,6 +109,7 @@ class TimerViewModel: ObservableObject {
             return formatTimeWords(from: seconds)
         }
     }
+    private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not. 
     
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool
@@ -136,17 +137,45 @@ class TimerViewModel: ObservableObject {
         self.tasksData.tasks = self.tasks
     }
     
-    // MARK: - Logic
+    // MARK: - Background/Active State Logic
     
     func recalculateTimer() {
-        if let lastBackgroundDate = PersistenceManager.shared.lastBackgroundDate {
-            print("Seconds gone: \(Date().timeIntervalSince(lastBackgroundDate))")
+        guard pendingSavedDateFromBackground else { return }
+        guard let lastBackgroundDate = PersistenceManager.shared.lastBackgroundDate else { return }
+        
+        pendingSavedDateFromBackground = false
+        
+        var secondsGone = Date().timeIntervalSince(lastBackgroundDate).rounded()
+        print("Seconds gone: \(secondsGone)") //TODO: remove
+        
+        if !timerPaused {
+            //find out which state we are in
+            if currentTaskIsOverdue, let timerState = currentTask.timer.timerState {
+                switch timerState {
+                    case .exceeded(let seconds):
+                        let newSeconds = seconds + secondsGone
+                        self.currentTask.timer.timerState = .exceeded(newSeconds)
+                    case .saved:
+                        return
+                }
+            } else { //is not overdue
+                if currentTask.timer.remainingTimeInSecs >= secondsGone {
+                    //first case: user left and came back before going into "overdue".
+                    currentTask.timer.remainingTimeInSecs -= secondsGone
+                    currentTask.timer.timerState = .saved(currentTask.timer.remainingTimeInSecs)
+                } else {
+                    //second case: user left and came back after the timer reached 0, meaning it went "overdue".
+                    secondsGone -= currentTask.timer.remainingTimeInSecs
+                    currentTask.timer.remainingTimeInSecs = 0
+                    currentTask.timer.timerState = .exceeded(secondsGone)
+                }
+            }
         }
     }
     
     func saveBackgroundDate() {
+        pendingSavedDateFromBackground = true
         PersistenceManager.shared.lastBackgroundDate = Date()
-        print("\(PersistenceManager.shared.lastBackgroundDate)")
     }
     
     // MARK: - User Intents

@@ -110,6 +110,9 @@ struct TimerView: View {
             
             Spacer()
         }
+        
+        //MARK: - Scenes
+        
         .onChange(of: scenePhase, { oldValue, newValue in
             if newValue == .active {
                 print(newValue)
