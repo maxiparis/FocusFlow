@@ -9,6 +9,8 @@ import Foundation
 import UserNotifications
 
 
+//MARK: - NotificationsManager
+
 class NotificationsManager {
     
     static func scheduleExpirationNotifications(task: Task) {
@@ -43,6 +45,34 @@ class NotificationsManager {
         }
     }
     
+    ///Creates a `UNNotificationRequest` object if the specified type applies to that specific task. Else, we return nil.
+    ///Example:
+    ///If the `task` has expired, we wont set a timer for 5 minutes before `NotificationsIdentifier.preExpiration5`, so we return nil
+    ///If the `task` has 3 minutes left, and the type is `NotificationsIdentifier.onExpiration` then we create a nofication object, calculate its time, and return it.
+    func createNotification(for task: Task, type: NotificationsIdentifiers) -> UNNotificationRequest? {
+        //according to the type we want to create a notification request.
+        if task.timer.isOverdue && ( type == .preExpiration5 || type == .preExpiration1 || type == .onExpiration){
+            return nil
+        }
+        
+        if task.timer.isOverdue, let timerState = task.timer.timerState {
+            switch timerState {
+            case .exceeded(let exceededSeconds):
+                if type == .expiration5 {
+                    guard exceededSeconds < 300 else { return nil }
+                    //TODO: work here
+                    // Maybe make a dictionary [NotificationsIdentifiers:Int] where the value will be the seconds we needin order to finish the 
+                    
+                }
+            default:
+                return nil
+            }
+            
+        }
+        
+        return nil
+    }
+    
     static func cancelNotifications(for task: Task) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: getExpirationIds(for: task))
@@ -64,6 +94,8 @@ class NotificationsManager {
         return ids
     }
 }
+
+//MARK: - NotificationsIdentifiers
 
 enum NotificationsIdentifiers: String, CaseIterable {
     //Minutes before expiration
