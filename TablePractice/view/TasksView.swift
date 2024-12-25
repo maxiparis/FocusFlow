@@ -61,6 +61,14 @@ struct TasksView: View {
                         Label("Import test tasks", systemImage: "square.and.arrow.down")
                     }
                     
+                    Button {
+                        withAnimation(.smooth) {
+                            tasksVM.importOverdueTasks()
+                        }
+                    } label: {
+                        Label("Import overdue tasks", systemImage: "square.and.arrow.down")
+                    }
+                    
                     
                     //Import tasks from calendar
                     Button {

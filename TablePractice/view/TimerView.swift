@@ -9,8 +9,11 @@ import SwiftUI
 import UserNotifications
 
 struct TimerView: View {
+    
     @StateObject var timerVM: TimerViewModel
     var parentVM: TasksViewModel
+    @Environment(\.scenePhase) var scenePhase
+
     
     var body: some View {
         VStack(spacing: 60) {
@@ -65,7 +68,7 @@ struct TimerView: View {
                 Button {
                     if (timerVM.timerPaused) {
                         timerVM.startTimer()
-                        timerVM.scheduleExpirationNotifications(task: timerVM.currentTask) // Schedule notifications when the timer starts
+                        timerVM.scheduleExpirationNotifications(for: timerVM.currentTask) // Schedule notifications when the timer starts
                     } else {
                         timerVM.pauseTimer()
                     }
@@ -107,6 +110,20 @@ struct TimerView: View {
             
             Spacer()
         }
+        
+        //MARK: - Scenes
+        
+        .onChange(of: scenePhase, { oldValue, newValue in
+            if newValue == .active {
+                print(newValue)
+                timerVM.recalculateTimer()
+            } else if newValue == .inactive {
+                print(newValue)
+            } else { //background
+                print(newValue)
+                timerVM.saveBackgroundDate()
+            }
+        })
         .onAppear() {
             requestNotificationPermission() // Request notification permission on view load
             timerVM.startTimer()

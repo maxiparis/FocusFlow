@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 import SwiftUI
-import UserNotifications
 import UIKit
 
 private let SECONDS_IN_MINUTE = 60
@@ -109,6 +108,7 @@ class TimerViewModel: ObservableObject {
             return formatTimeWords(from: seconds)
         }
     }
+    private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not.
     
     @Published var timerPaused: Bool = false
     @Binding var isPresented: Bool
@@ -136,6 +136,47 @@ class TimerViewModel: ObservableObject {
         self.tasksData.tasks = self.tasks
     }
     
+    // MARK: - Background/Active State Logic
+    
+    func recalculateTimer() {
+        guard pendingSavedDateFromBackground else { return }
+        guard let lastBackgroundDate = PersistenceManager.shared.lastBackgroundDate else { return }
+        
+        pendingSavedDateFromBackground = false
+        
+        var secondsGone = Date().timeIntervalSince(lastBackgroundDate).rounded()
+        print("Seconds gone: \(secondsGone)") //TODO: remove
+        
+        if !timerPaused {
+            //find out which state we are in
+            if currentTaskIsOverdue, let timerState = currentTask.timer.timerState {
+                switch timerState {
+                    case .exceeded(let seconds):
+                        let newSeconds = seconds + secondsGone
+                        self.currentTask.timer.timerState = .exceeded(newSeconds)
+                    case .saved:
+                        return
+                }
+            } else { //is not overdue
+                if currentTask.timer.remainingTimeInSecs >= secondsGone {
+                    //first case: user left and came back before going into "overdue".
+                    currentTask.timer.remainingTimeInSecs -= secondsGone
+                    currentTask.timer.timerState = .saved(currentTask.timer.remainingTimeInSecs)
+                } else {
+                    //second case: user left and came back after the timer reached 0, meaning it went "overdue".
+                    secondsGone -= currentTask.timer.remainingTimeInSecs
+                    currentTask.timer.remainingTimeInSecs = 0
+                    currentTask.timer.timerState = .exceeded(secondsGone)
+                }
+            }
+        }
+    }
+    
+    func saveBackgroundDate() {
+        pendingSavedDateFromBackground = true
+        PersistenceManager.shared.lastBackgroundDate = Date()
+    }
+    
     // MARK: - User Intents
     
     func startTimer() {
@@ -157,13 +198,13 @@ class TimerViewModel: ObservableObject {
         }
         
         // Schedule notifications when the timer starts
-        scheduleExpirationNotifications(task: currentTask)
+        NotificationsManager.scheduleExpirationNotifications(task: currentTask)
     }
     
     func pauseTimer() {
         timer.invalidate()
         timerPaused = true
-        cancelNotifications(for: currentTask)
+        NotificationsManager.cancelNotifications(for: currentTask)
     }
     
     func completeTask() {
@@ -180,53 +221,24 @@ class TimerViewModel: ObservableObject {
         }
         
         self.startTimer()
-        cancelNotifications(for: currentTask)
+        NotificationsManager.cancelNotifications(for: currentTask)
     }
     
     func addTime(_ minutes: AddMinutes) {
         tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
-        cancelNotifications(for: currentTask)
-        scheduleExpirationNotifications(task: currentTask)
-    }
-    
-    // MARK: - Notification Management
-    
-    func scheduleExpirationNotifications(task: Task) {
-        let center = UNUserNotificationCenter.current()
-        if !task.timer.isOverdue {
-            
-            //        // Pre-expiration notification
-            //        guard task.timer.isOverdue else { return }
-            //
-            //        if task.timer.remainingTimeInSecs > 300 {
-            //            let preExpirationContent = UNMutableNotificationContent()
-            //            preExpirationContent.title = "Task Expiring Soon"
-            //            preExpirationContent.body = "Your task \"\(task.title)\" is expiring in 5 minutes."
-            //            preExpirationContent.sound = .default
-            //
-            //            let preExpirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer, repeats: false)
-            //            let preExpirationRequest = UNNotificationRequest(identifier: "preExpiration-\(task.id)", content: preExpirationContent, trigger: preExpirationTrigger)
-            //            center.add(preExpirationRequest)
-            //        }
-            
-            // Expiration notification
-            let expirationContent = UNMutableNotificationContent()
-            expirationContent.title = "Task Expired"
-            expirationContent.body = "Your task \"\(task.title)\" has expired."
-            expirationContent.sound = .default
-            
-            let expirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer.remainingTimeInSecs, repeats: false)
-            let expirationRequest = UNNotificationRequest(identifier: "expiration-\(task.id)", content: expirationContent, trigger: expirationTrigger)
-            center.add(expirationRequest)
-            print("expiration notifications set")
-        }
+        NotificationsManager.cancelNotifications(for: currentTask)
+        NotificationsManager.scheduleExpirationNotifications(task: currentTask)
     }
     
     func cancelNotifications(for task: Task) {
-        let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: ["preExpiration-\(task.id)", "expiration-\(task.id)"])
-        print("removed notifications")
+        NotificationsManager.cancelNotifications(for: task)
     }
+    
+    func scheduleExpirationNotifications(for task: Task) {
+        NotificationsManager.scheduleExpirationNotifications(task: task)
+    }
+    
+    
     
     // MARK: - Utils
     
