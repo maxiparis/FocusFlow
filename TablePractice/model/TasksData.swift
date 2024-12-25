@@ -89,6 +89,11 @@ struct TasksData {
         return components.joined(separator: " and ")
     }
     
+    var nextTimestampObjective: TimeInterval? {
+        get { persistanceManager.nextTimestampObjective }
+        set { persistanceManager.nextTimestampObjective = newValue }
+    }
+    
     //MARK: - Initializers
     
     init() {

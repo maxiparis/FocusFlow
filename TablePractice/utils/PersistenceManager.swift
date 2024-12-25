@@ -10,6 +10,7 @@ import Foundation
 
 private let TASKS_KEY = "tasksArrayKey"
 private let LAST_BACKGROUND_DATE_KEY = "lastBackgroundDateKey"
+private let NEXT_TIMESTAMP_KEY = "nextTimeStampKey"
 
 class PersistenceManager {
     
@@ -22,6 +23,11 @@ class PersistenceManager {
     var lastBackgroundDate: Date? {
         get { defaults.object(forKey: LAST_BACKGROUND_DATE_KEY) as? Date }
         set { defaults.set(newValue, forKey: LAST_BACKGROUND_DATE_KEY) }
+    }
+    
+    var nextTimestampObjective: TimeInterval? {
+        get { defaults.object(forKey: NEXT_TIMESTAMP_KEY) as? TimeInterval }
+        set { defaults.set(newValue, forKey: NEXT_TIMESTAMP_KEY) }
     }
     
     // MARK: - Private initializer
