@@ -191,13 +191,9 @@ class TimerViewModel: ObservableObject {
         self.timerPaused = false
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             //calculate the difference between now
-            if let nextTimestampObjective = self.tasksData.nextTimestampObjective {
-                let now = Date()
-                let difference = nextTimestampObjective - now.timeIntervalSince1970
-                self.currentTask.timer.remainingTimeInSecs = difference
-            } else {
-                print("❌ERROR")
-            }
+            let now = Date()
+            let difference = self.tasksData.nextTimestampObjective! - now.timeIntervalSince1970
+            self.currentTask.timer.remainingTimeInSecs = difference
             
             
             
