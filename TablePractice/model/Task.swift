@@ -34,9 +34,9 @@ struct TimeTracked: Decodable, Encodable {
     
     var hours: Int
     var minute: Int
-    var originalHoursAndMinutesAsSeconds: TimeInterval {
-        TimeInterval((hours * 60 * 60) + (minute * 60))
-    }
+//    var originalHoursAndMinutesAsSeconds: TimeInterval {
+//        TimeInterval((hours * 60 * 60) + (minute * 60))
+//    }
     var remainingTimeInSecs: TimeInterval
     var timerState: TimerState? //if this is nil, it means we haven't started this task
     var isOverdue: Bool {

@@ -176,7 +176,7 @@ class TimerViewModel: ObservableObject {
     
     func calculateNextTimestampObjective(_ task: Task) {
         let calendar = Calendar.current
-        let nextTimestamp = calendar.date(byAdding: .second, value: Int(task.timer.originalHoursAndMinutesAsSeconds), to: Date())
+        let nextTimestamp = calendar.date(byAdding: .second, value: Int(task.timer.remainingTimeInSecs), to: Date())
         tasksData.nextTimestampObjective = nextTimestamp?.timeIntervalSince1970
     }
     
@@ -189,11 +189,12 @@ class TimerViewModel: ObservableObject {
     
     func startTimer() {
         self.timerPaused = false
+        calculateNextTimestampObjective(currentTask)
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             //calculate the difference between now
             let now = Date()
             let difference = self.tasksData.nextTimestampObjective! - now.timeIntervalSince1970
-            self.currentTask.timer.remainingTimeInSecs = difference
+            self.currentTask.timer.remainingTimeInSecs = ceil(difference)
             
             
             
@@ -253,13 +254,7 @@ class TimerViewModel: ObservableObject {
     func scheduleExpirationNotifications(for task: Task) {
         NotificationsManager.scheduleExpirationNotifications(task: task)
     }
-    
-    func handleStartTimer() {
-        calculateNextTimestampObjective(currentTask)
-        startTimer()
-    }
-    
-    
+
     
     // MARK: - Utils
     

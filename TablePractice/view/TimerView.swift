@@ -110,7 +110,7 @@ struct TimerView: View {
         }
         .onAppear() {
             requestNotificationPermission() // Request notification permission on view load
-            timerVM.handleStartTimer()
+            timerVM.startTimer()
         }
         .onDisappear() {
             timerVM.pauseTimer()
