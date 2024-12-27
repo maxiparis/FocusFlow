@@ -65,7 +65,7 @@ struct TimerView: View {
                 // Pause/Resume
                 Button {
                     if (timerVM.timerPaused) {
-                        timerVM.resumeTimer()
+                        timerVM.startTimer()
 //                        timerVM.scheduleExpirationNotifications(for: timerVM.currentTask) // Schedule notifications when the timer starts
                     } else {
                         timerVM.pauseTimer()

@@ -37,7 +37,12 @@ struct TimeTracked: Decodable, Encodable {
 //    var originalHoursAndMinutesAsSeconds: TimeInterval {
 //        TimeInterval((hours * 60 * 60) + (minute * 60))
 //    }
-    var remainingTimeInSecs: TimeInterval
+    var remainingTimeInSecs: TimeInterval {
+        didSet {
+            remainingTimeInSecs.round(.toNearestOrAwayFromZero)
+            print("Remaining time in secs: \(remainingTimeInSecs)")
+        }
+    }
     var timerState: TimerState? //if this is nil, it means we haven't started this task
     var isOverdue: Bool {
         remainingTimeInSecs == 0
