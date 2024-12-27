@@ -56,7 +56,7 @@ struct TimerView: View {
                 Button {
                     withAnimation(.easeInOut(duration: 0.25)) {
                         timerVM.completeTask()
-                        timerVM.cancelNotifications(for: timerVM.currentTask) // Cancel notifications when the task is completed
+//                        timerVM.cancelNotifications(for: timerVM.currentTask) // Cancel notifications when the task is completed
                     }
                 } label: {
                     ButtonImageView(systemImage: "checkmark.circle")
@@ -97,12 +97,7 @@ struct TimerView: View {
             }
             
             VStack {
-                switch(timerVM.sessionTimerState) {
-                case .exceeded:
-                    Text("Time Exceeded:")
-                case .saved:
-                    Text("Time Saved:")
-                }
+                Text("Time \(timerVM.sessionTimerState >= 0 ? "Saved" : "Exceeded"):")
                 Text(timerVM.sessionTimerStateText)
             }
             
@@ -115,7 +110,7 @@ struct TimerView: View {
         .onDisappear() {
             timerVM.pauseTimer()
             parentVM.markTasksAsNotCompleted()
-            timerVM.cancelNotifications(for: timerVM.currentTask)
+//            timerVM.cancelNotifications(for: timerVM.currentTask)
         }
         .sheet(isPresented: $timerVM.displayReportView, content: {
             SessionReportView(timerVM: timerVM)

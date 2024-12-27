@@ -49,20 +49,6 @@ class TimerViewModel: ObservableObject {
     
     var countdownString: String? {
         return formatTime(from: currentTask.timer.remainingTimeInSecs)
-//        if currentTask.timer.isOverdue {
-//            if let timerState = currentTask.timer.timerState {
-//                switch timerState {
-//                case .exceeded(let seconds):
-//                    return formatTime(from: seconds)
-//                default:
-//                    return formatTime(from: currentTask.timer.remainingTimeInSecs)
-//                }
-//            } else {
-//                return formatTime(from: currentTask.timer.remainingTimeInSecs)
-//            }
-//        } else {
-//            return formatTime(from: currentTask.timer.remainingTimeInSecs)
-//        }
     }
     
     var currentTaskIsOverdue: Bool {
@@ -79,35 +65,18 @@ class TimerViewModel: ObservableObject {
         }
     }
     
-    var sessionTimerState: TimerState {
-        let totalTimeSaveOrExceeded = tasks.reduce(0) { (result, task) in
-            if let timerState = task.timer.timerState {
-                switch(timerState) {
-                case .exceeded(let seconds):
-                    return result - seconds
-                case .saved(let seconds):
-                    return result + seconds
-                }
-            } else {
-                return result
-            }
+    var sessionTimerState: TimeInterval {
+        return tasks.reduce(0) { (result, task) in
+            return result + (task.timer.taskStarted ? task.timer.remainingTimeInSecs : 0)
         }
-        
-        return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
     }
     
     var sessionTimerStateText: String {
-        switch(sessionTimerState) {
-        case .saved(let seconds), .exceeded(let seconds):
-            return formatTime(from: seconds)
-        }
+        return formatTime(from: sessionTimerState)
     }
     
     var sessionTimerStateWorded: String {
-        switch(sessionTimerState) {
-        case .saved(let seconds), .exceeded(let seconds):
-            return formatTimeWords(from: seconds)
-        }
+        return formatTimeWords(from: sessionTimerState)
     }
     private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not.
     

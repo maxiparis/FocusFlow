@@ -34,9 +34,12 @@ struct TimeTracked: Decodable, Encodable {
     
     var hours: Int
     var minute: Int
-//    var originalHoursAndMinutesAsSeconds: TimeInterval {
-//        TimeInterval((hours * 60 * 60) + (minute * 60))
-//    }
+    var originalHoursAndMinutesAsSeconds: TimeInterval {
+        TimeInterval((hours * 60 * 60) + (minute * 60))
+    }
+    var taskStarted: Bool {
+        originalHoursAndMinutesAsSeconds != remainingTimeInSecs
+    }
     var remainingTimeInSecs: TimeInterval {
         didSet {
             remainingTimeInSecs.round(.toNearestOrAwayFromZero)

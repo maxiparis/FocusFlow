@@ -13,13 +13,18 @@ struct SessionReportView: View {
     var body: some View {
         VStack(spacing: 100) {
             Spacer()
-            switch(timerVM.sessionTimerState) {
-            case .exceeded:
-                exceededTimeView
-            case .saved:
-//                exceededTimeView //for testing
+            if timerVM.sessionTimerState >= 0 {
                 savedTimeView
+            } else {
+                exceededTimeView
             }
+//            switch(timerVM.sessionTimerState) {
+//            case .exceeded:
+//                exceededTimeView
+//            case .saved:
+////                exceededTimeView //for testing
+//                savedTimeView
+//            }
             Spacer()
         }
         .padding()
