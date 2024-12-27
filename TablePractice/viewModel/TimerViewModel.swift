@@ -241,9 +241,10 @@ class TimerViewModel: ObservableObject {
     // MARK: - Utils
     
     func formatTime(from timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = (Int(timeInterval) % 3600) / 60
-        let seconds = Int(timeInterval) % 60
+        
+        let hours = Int(abs(timeInterval)) / 3600
+        let minutes = (Int(abs(timeInterval)) % 3600) / 60
+        let seconds = Int(abs(timeInterval)) % 60
         
         if hours > 0 {
             return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
@@ -253,9 +254,9 @@ class TimerViewModel: ObservableObject {
     }
     
     func formatTimeWords(from timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = (Int(timeInterval) % 3600) / 60
-        let seconds = Int(timeInterval) % 60
+        let hours = Int(abs(timeInterval)) / 3600
+        let minutes = (Int(abs(timeInterval)) % 3600) / 60
+        let seconds = Int(abs(timeInterval)) % 60
         
         var components: [String] = []
         

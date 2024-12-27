@@ -107,8 +107,11 @@ struct TasksData {
     }
     
     mutating func addMinutesToTask(minutes: AddMinutes, at index: Int) {
-        //Add the time here.
-        self.tasks[index].timer.remainingTimeInSecs += Double(minutes.rawValue) * 60
+        if self.tasks[index].timer.isOverdue {
+            self.tasks[index].timer.remainingTimeInSecs = Double(minutes.rawValue) * 60
+        } else {
+            self.tasks[index].timer.remainingTimeInSecs += Double(minutes.rawValue) * 60
+        }
     }
     
     mutating func importDefaultTasks() {
