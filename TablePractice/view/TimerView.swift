@@ -110,7 +110,7 @@ struct TimerView: View {
         .onDisappear() {
             timerVM.pauseTimer()
             parentVM.markTasksAsNotCompleted()
-//            timerVM.cancelNotifications(for: timerVM.currentTask)
+            timerVM.cancelNotifications(for: timerVM.currentTask)
         }
         .sheet(isPresented: $timerVM.displayReportView, content: {
             SessionReportView(timerVM: timerVM)
