@@ -164,13 +164,13 @@ class TimerViewModel: ObservableObject {
         }
         
         /// Schedule notifications when the timer starts
-        // NotificationsManager.scheduleExpirationNotifications(task: currentTask)
+         NotificationsManager.scheduleExpirationNotifications(task: currentTask)
     }
     
     func pauseTimer() {
         timer.invalidate()
         timerPaused = true
-//        NotificationsManager.cancelNotifications(for: currentTask)
+        NotificationsManager.cancelNotifications(for: currentTask)
     }
     
     func completeTask() {
@@ -194,8 +194,8 @@ class TimerViewModel: ObservableObject {
     func addTime(_ minutes: AddMinutes) {
         tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
         calculateNextTimestampObjective(currentTask)
-//        NotificationsManager.cancelNotifications(for: currentTask)
-//        NotificationsManager.scheduleExpirationNotifications(task: currentTask)
+        cancelNotifications(for: currentTask)
+        scheduleExpirationNotifications(for: currentTask)
     }
     
     func cancelNotifications(for task: Task) {

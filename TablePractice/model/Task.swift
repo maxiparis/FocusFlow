@@ -48,7 +48,7 @@ struct TimeTracked: Decodable, Encodable {
     }
     var timerState: TimerState? //if this is nil, it means we haven't started this task
     var isOverdue: Bool {
-        remainingTimeInSecs < 0
+        remainingTimeInSecs <= 0
     }
     var dueDate: Date? {
         if isOverdue {
@@ -63,6 +63,12 @@ struct TimeTracked: Decodable, Encodable {
         self.minute = minute
         self.timerState = timerState
         self.remainingTimeInSecs = TimeInterval((hours * 60 * 60) + (minute * 60))
+    }
+    
+    init(hours: Int, minute: Int, remaningTime: TimeInterval) {
+        self.hours = hours
+        self.minute = minute
+        self.remainingTimeInSecs = remaningTime
     }
 }
 

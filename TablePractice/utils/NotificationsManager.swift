@@ -38,6 +38,7 @@ class NotificationsManager {
             expirationContent.sound = .default
             
             let expirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer.remainingTimeInSecs, repeats: false)
+            print("Setting expiration notification in \(expirationTrigger.timeInterval) seconds")
             let expirationRequest = UNNotificationRequest(identifier: "\(NotificationsIdentifiers.onExpiration)-\(task.id)", content: expirationContent, trigger: expirationTrigger)
             
             center.add(expirationRequest)
