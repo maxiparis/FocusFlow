@@ -75,7 +75,7 @@ class NotificationsManager {
         }
         
         content.body = body
-        content.sound = .defaultCritical
+        content.sound = UNNotificationSound(named: UNNotificationSoundName("mainBell.wav"))
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(secondsToNotification), repeats: false)
         

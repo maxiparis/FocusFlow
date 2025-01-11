@@ -23,6 +23,7 @@
 		B2096D1C2CAD02E30018E223 /* HoursMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2096D1B2CAD02E30018E223 /* HoursMinutes.swift */; };
 		B20AE0DE2CC33C6A00AB054D /* SessionReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */; };
 		B21003A42D1FA669003BFF47 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21003A32D1FA669003BFF47 /* Extensions.swift */; };
+		B2B9314C2D32303800557980 /* mainBell.wav in Resources */ = {isa = PBXBuildFile; fileRef = B2B9314B2D32303800557980 /* mainBell.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		B20AE0DD2CC33C6A00AB054D /* SessionReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionReportView.swift; sourceTree = "<group>"; };
 		B20AE11D2CC8855200AB054D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B21003A32D1FA669003BFF47 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B2B9314B2D32303800557980 /* mainBell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = mainBell.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 		76B95A3B2C26203F0052EA05 /* TablePractice */ = {
 			isa = PBXGroup;
 			children = (
+				B2B9314A2D32301E00557980 /* sounds */,
 				B20AE11D2CC8855200AB054D /* Info.plist */,
 				B2096D1A2CAD029B0018E223 /* utils */,
 				7635C1222C29BE0800789148 /* viewModel */,
@@ -172,6 +175,14 @@
 				B21003A32D1FA669003BFF47 /* Extensions.swift */,
 			);
 			path = utils;
+			sourceTree = "<group>";
+		};
+		B2B9314A2D32301E00557980 /* sounds */ = {
+			isa = PBXGroup;
+			children = (
+				B2B9314B2D32303800557980 /* mainBell.wav */,
+			);
+			path = sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +291,7 @@
 			files = (
 				76B95A452C2620400052EA05 /* Preview Assets.xcassets in Resources */,
 				76B95A412C2620400052EA05 /* Assets.xcassets in Resources */,
+				B2B9314C2D32303800557980 /* mainBell.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
