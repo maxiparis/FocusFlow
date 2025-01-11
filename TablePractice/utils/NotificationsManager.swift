@@ -39,11 +39,11 @@ class NotificationsManager {
         NotificationsIdentifiers.allCases.forEach { notification in
             if let request = createNotification(for: task, type: notification) {
                 center.add(request)
-                print("notification added for \(notification)")
+                print("Notification added for \(notification)")
             }
         }
         
-        print("expiration notifications set")
+        print("Expiration notifications set")
     }
     
     ///Creates a `UNNotificationRequest` object if the specified type applies to that specific task. Else, we return nil.
@@ -62,17 +62,20 @@ class NotificationsManager {
         content.title = titlePerNotification[type]!
         
         var body = ""
+        let minutesFormatted = abs(timePerNotification[type]!.secondsToMinutes)
+        let minutesDescription = "\(minutesFormatted) minute\(minutesFormatted > 1 ? "s" : "")" /// Example: "5 minutes" or "1 minute"
+        
         switch type {
         case .preExpiration1, .preExpiration5:
-            body = "Your task \(task.title) will be due in \(timePerNotification[type]!.secondsToMinutes) minutes."
+            body = "Your task \"\(task.title)\" will be due in \(minutesDescription)."
         case .onExpiration:
-            body = "Your task \(task.title) has expired."
-        default:
-            body = "Your task \(task.title) expired \(timePerNotification[type]!.secondsToMinutes) minutes ago."
+            body = "Your task \"\(task.title)\" has expired."
+        default: //post-expiration
+            body = "Your task \"\(task.title)\" expired \(minutesDescription) ago."
         }
         
         content.body = body
-        content.sound = .default
+        content.sound = .defaultCritical
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(secondsToNotification), repeats: false)
         
@@ -84,6 +87,8 @@ class NotificationsManager {
         center.removeAllPendingNotificationRequests()
         print("removed notifications")
     }
+    
+    
     
 //    private static func getExpirationIds(for task: Task) -> [String] {
 //        var ids: [String] = []

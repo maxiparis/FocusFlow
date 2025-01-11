@@ -25,7 +25,7 @@ extension TimeInterval {
         return self * 3600
     }
     
-    var secondsToMinutes: TimeInterval {
-        return self / 60
+    var secondsToMinutes: Int {
+        return Int(self) / 60
     }
 }
