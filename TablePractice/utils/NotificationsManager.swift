@@ -13,86 +13,93 @@ import UserNotifications
 
 class NotificationsManager {
     
+    static let timePerNotification: [NotificationsIdentifiers : TimeInterval] = [
+        .preExpiration1: -1.minutesToSeconds,
+        .preExpiration5: -5.minutesToSeconds,
+        .onExpiration: 0,
+        .postExpiration1: 1.minutesToSeconds,
+        .postExpiration2: 2.minutesToSeconds,
+        .postExpiration5: 5.minutesToSeconds,
+        .postExpiration10: 10.minutesToSeconds
+    ]
+    
+    static let titlePerNotification: [NotificationsIdentifiers : String] = [
+        .preExpiration1: "Task Reminder",
+        .preExpiration5: "Task Reminder",
+        .onExpiration: "Task Expiration",
+        .postExpiration1: "Task Has Expired",
+        .postExpiration2: "Task Has Expired",
+        .postExpiration5: "Task Has Expired",
+        .postExpiration10: "Task Has Expired"
+    ]
+    
+    
     static func scheduleExpirationNotifications(task: Task) {
         let center = UNUserNotificationCenter.current()
-        if !task.timer.isOverdue {
-            
-            //        // Pre-expiration notification
-            //        guard task.timer.isOverdue else { return }
-            //
-            //        if task.timer.remainingTimeInSecs > 300 {
-            //            let preExpirationContent = UNMutableNotificationContent()
-            //            preExpirationContent.title = "Task Expiring Soon"
-            //            preExpirationContent.body = "Your task \"\(task.title)\" is expiring in 5 minutes."
-            //            preExpirationContent.sound = .default
-            //
-            //            let preExpirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer, repeats: false)
-            //            let preExpirationRequest = UNNotificationRequest(identifier: "preExpiration-\(task.id)", content: preExpirationContent, trigger: preExpirationTrigger)
-            //            center.add(preExpirationRequest)
-            //        }
-            
-            // Expiration notification
-            let expirationContent = UNMutableNotificationContent()
-            expirationContent.title = "Task Expired"
-            expirationContent.body = "Your task \"\(task.title)\" has expired."
-            expirationContent.sound = .default
-            
-            let expirationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: task.timer.remainingTimeInSecs, repeats: false)
-            let expirationRequest = UNNotificationRequest(identifier: "\(NotificationsIdentifiers.onExpiration)-\(task.id)", content: expirationContent, trigger: expirationTrigger)
-            
-            center.add(expirationRequest)
-            print("expiration notifications set")
+        NotificationsIdentifiers.allCases.forEach { notification in
+            if let request = createNotification(for: task, type: notification) {
+                center.add(request)
+                print("Notification added for \(notification)")
+            }
         }
+        
+        print("Expiration notifications set")
     }
     
     ///Creates a `UNNotificationRequest` object if the specified type applies to that specific task. Else, we return nil.
     ///Example:
     ///If the `task` has expired, we wont set a timer for 5 minutes before `NotificationsIdentifier.preExpiration5`, so we return nil
     ///If the `task` has 3 minutes left, and the type is `NotificationsIdentifier.onExpiration` then we create a nofication object, calculate its time, and return it.
-    func createNotification(for task: Task, type: NotificationsIdentifiers) -> UNNotificationRequest? {
-        //according to the type we want to create a notification request.
-        if task.timer.isOverdue && ( type == .preExpiration5 || type == .preExpiration1 || type == .onExpiration){
-            return nil
+    static func createNotification(for task: Task, type: NotificationsIdentifiers) -> UNNotificationRequest? {
+        
+        guard !task.timer.isOverdue else { return nil }
+        
+        let secondsToNotification = task.timer.remainingTimeInSecs + timePerNotification[type]!
+        
+        guard secondsToNotification > 0 else { return nil }
+        
+        let content = UNMutableNotificationContent()
+        content.title = titlePerNotification[type]!
+        
+        var body = ""
+        let minutesFormatted = abs(timePerNotification[type]!.secondsToMinutes)
+        let minutesDescription = "\(minutesFormatted) minute\(minutesFormatted > 1 ? "s" : "")" /// Example: "5 minutes" or "1 minute"
+        
+        switch type {
+        case .preExpiration1, .preExpiration5:
+            body = "Your task \"\(task.title)\" will be due in \(minutesDescription)."
+        case .onExpiration:
+            body = "Your task \"\(task.title)\" has expired."
+        default: //post-expiration
+            body = "Your task \"\(task.title)\" expired \(minutesDescription) ago."
         }
         
-        if task.timer.isOverdue, let timerState = task.timer.timerState {
-            switch timerState {
-            case .exceeded(let exceededSeconds):
-                if type == .expiration5 {
-                    guard exceededSeconds < 300 else { return nil }
-                    //TODO: work here
-                    // Maybe make a dictionary [NotificationsIdentifiers:Int] where the value will be the seconds we needin order to finish the 
-                    
-                }
-            default:
-                return nil
-            }
-            
-        }
+        content.body = body
+        content.sound = UNNotificationSound(named: UNNotificationSoundName("mainBell.wav"))
         
-        return nil
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(secondsToNotification), repeats: false)
+        
+        return UNNotificationRequest(identifier: "\(type)-\(task.id)", content: content, trigger: trigger)
     }
     
     static func cancelNotifications(for task: Task) {
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: getExpirationIds(for: task))
+        center.removeAllPendingNotificationRequests()
         print("removed notifications")
     }
     
-    static func schedulePreExpirationNotification() {
-        
-    }
     
-    private static func getExpirationIds(for task: Task) -> [String] {
-        var ids: [String] = []
-        for type in NotificationsIdentifiers.allCases {
-            switch type {
-            default:
-                ids.append("\(type)-\(task.id)")
-            }
-        }
-        return ids
-    }
+    
+//    private static func getExpirationIds(for task: Task) -> [String] {
+//        var ids: [String] = []
+//        for type in NotificationsIdentifiers.allCases {
+//            switch type {
+//            default:
+//                ids.append("\(type)-\(task.id)")
+//            }
+//        }
+//        return ids
+//    }
 }
 
 //MARK: - NotificationsIdentifiers
@@ -102,12 +109,12 @@ enum NotificationsIdentifiers: String, CaseIterable {
     case preExpiration5 = "preExpiration5"
     case preExpiration1 = "preExpiration1"
     
-    //Whe n it expires
+    //When it expires
     case onExpiration = "expiration"
     
     //Minutes after expiration
-    case expiration1 = "expiration1"
-    case expiration2 = "expiration2"
-    case expiration5 = "expiration5"
-    case expiration10 = "expiration10"
+    case postExpiration1 = "postExpiration1"
+    case postExpiration2 = "postExpiration2"
+    case postExpiration5 = "postExpiration5"
+    case postExpiration10 = "postExpiration10"
 }

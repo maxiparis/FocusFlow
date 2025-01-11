@@ -48,20 +48,7 @@ class TimerViewModel: ObservableObject {
     }
     
     var countdownString: String? {
-        if currentTask.timer.isOverdue {
-            if let timerState = currentTask.timer.timerState {
-                switch timerState {
-                case .exceeded(let seconds):
-                    return formatTime(from: seconds)
-                default:
-                    return formatTime(from: currentTask.timer.remainingTimeInSecs)
-                }
-            } else {
-                return formatTime(from: currentTask.timer.remainingTimeInSecs)
-            }
-        } else {
-            return formatTime(from: currentTask.timer.remainingTimeInSecs)
-        }
+        return formatTime(from: currentTask.timer.remainingTimeInSecs)
     }
     
     var currentTaskIsOverdue: Bool {
@@ -78,35 +65,18 @@ class TimerViewModel: ObservableObject {
         }
     }
     
-    var sessionTimerState: TimerState {
-        let totalTimeSaveOrExceeded = tasks.reduce(0) { (result, task) in
-            if let timerState = task.timer.timerState {
-                switch(timerState) {
-                case .exceeded(let seconds):
-                    return result - seconds
-                case .saved(let seconds):
-                    return result + seconds
-                }
-            } else {
-                return result
-            }
+    var sessionTimerState: TimeInterval {
+        return tasks.reduce(0) { (result, task) in
+            return result + (task.timer.taskStarted ? task.timer.remainingTimeInSecs : 0)
         }
-        
-        return totalTimeSaveOrExceeded > 0 ? .saved(totalTimeSaveOrExceeded) : .exceeded(totalTimeSaveOrExceeded * -1)
     }
     
     var sessionTimerStateText: String {
-        switch(sessionTimerState) {
-        case .saved(let seconds), .exceeded(let seconds):
-            return formatTime(from: seconds)
-        }
+        return formatTime(from: sessionTimerState)
     }
     
     var sessionTimerStateWorded: String {
-        switch(sessionTimerState) {
-        case .saved(let seconds), .exceeded(let seconds):
-            return formatTimeWords(from: seconds)
-        }
+        return formatTimeWords(from: sessionTimerState)
     }
     private var pendingSavedDateFromBackground: Bool = false // This variable acts as a semaphore to know when we should recalculate time or not.
     
@@ -135,6 +105,7 @@ class TimerViewModel: ObservableObject {
     func saveTasksToModel() {
         self.tasksData.tasks = self.tasks
     }
+    
     
     // MARK: - Background/Active State Logic
     
@@ -172,6 +143,12 @@ class TimerViewModel: ObservableObject {
         }
     }
     
+    func calculateNextTimestampObjective(_ task: Task) {
+        let calendar = Calendar.current
+        let nextTimestamp = calendar.date(byAdding: .second, value: Int(task.timer.remainingTimeInSecs), to: Date())
+        tasksData.nextTimestampObjective = nextTimestamp?.timeIntervalSince1970
+    }
+    
     func saveBackgroundDate() {
         pendingSavedDateFromBackground = true
         PersistenceManager.shared.lastBackgroundDate = Date()
@@ -181,24 +158,13 @@ class TimerViewModel: ObservableObject {
     
     func startTimer() {
         self.timerPaused = false
+        calculateNextTimestampObjective(currentTask)
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if !self.currentTask.timer.isOverdue {
-                self.currentTask.timer.remainingTimeInSecs -= 1
-                self.currentTask.timer.timerState = .saved(self.currentTask.timer.remainingTimeInSecs)
-            } else {
-                if let timerState = self.currentTask.timer.timerState {
-                    switch timerState {
-                    case .exceeded(let seconds):
-                        self.currentTask.timer.timerState = .exceeded(seconds + 1)
-                    case .saved:
-                        self.currentTask.timer.timerState = .exceeded(1)
-                    }
-                }
-            }
+            self.updateNextTimestamp()
         }
         
-        // Schedule notifications when the timer starts
-        NotificationsManager.scheduleExpirationNotifications(task: currentTask)
+        /// Schedule notifications when the timer starts
+         NotificationsManager.scheduleExpirationNotifications(task: currentTask)
     }
     
     func pauseTimer() {
@@ -213,6 +179,7 @@ class TimerViewModel: ObservableObject {
         let currentTaskIsLastOne = self.tasks[currentTaskIndex] == self.tasks.last
         
         tasksData.completeTask(in: currentTaskIndex)
+        calculateNextTimestampObjective(currentTask) //TODO: should this be here or earlier, later?
         self.tasks = tasksData.tasks
         
         if currentTaskIsLastOne {
@@ -221,13 +188,14 @@ class TimerViewModel: ObservableObject {
         }
         
         self.startTimer()
-        NotificationsManager.cancelNotifications(for: currentTask)
+//        NotificationsManager.cancelNotifications(for: currentTask)
     }
     
     func addTime(_ minutes: AddMinutes) {
         tasksData.addMinutesToTask(minutes: minutes, at: currentTaskIndex)
-        NotificationsManager.cancelNotifications(for: currentTask)
-        NotificationsManager.scheduleExpirationNotifications(task: currentTask)
+        calculateNextTimestampObjective(currentTask)
+        cancelNotifications(for: currentTask)
+        scheduleExpirationNotifications(for: currentTask)
     }
     
     func cancelNotifications(for task: Task) {
@@ -237,15 +205,15 @@ class TimerViewModel: ObservableObject {
     func scheduleExpirationNotifications(for task: Task) {
         NotificationsManager.scheduleExpirationNotifications(task: task)
     }
-    
-    
+
     
     // MARK: - Utils
     
     func formatTime(from timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = (Int(timeInterval) % 3600) / 60
-        let seconds = Int(timeInterval) % 60
+        
+        let hours = Int(abs(timeInterval)) / 3600
+        let minutes = (Int(abs(timeInterval)) % 3600) / 60
+        let seconds = Int(abs(timeInterval)) % 60
         
         if hours > 0 {
             return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
@@ -255,9 +223,9 @@ class TimerViewModel: ObservableObject {
     }
     
     func formatTimeWords(from timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = (Int(timeInterval) % 3600) / 60
-        let seconds = Int(timeInterval) % 60
+        let hours = Int(abs(timeInterval)) / 3600
+        let minutes = (Int(abs(timeInterval)) % 3600) / 60
+        let seconds = Int(abs(timeInterval)) % 60
         
         var components: [String] = []
         
@@ -281,6 +249,12 @@ class TimerViewModel: ObservableObject {
         } else {
             return "0 seconds"
         }
+    }
+    
+    func updateNextTimestamp() {
+        let now = Date()
+        let difference = self.tasksData.nextTimestampObjective! - now.timeIntervalSince1970
+        self.currentTask.timer.remainingTimeInSecs = difference
     }
 }
 

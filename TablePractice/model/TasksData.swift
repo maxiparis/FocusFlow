@@ -89,6 +89,11 @@ struct TasksData {
         return components.joined(separator: " and ")
     }
     
+    var nextTimestampObjective: TimeInterval? {
+        get { persistanceManager.nextTimestampObjective }
+        set { persistanceManager.nextTimestampObjective = newValue }
+    }
+    
     //MARK: - Initializers
     
     init() {
@@ -102,8 +107,11 @@ struct TasksData {
     }
     
     mutating func addMinutesToTask(minutes: AddMinutes, at index: Int) {
-        //Add the time here.
-        self.tasks[index].timer.remainingTimeInSecs += Double(minutes.rawValue) * 60
+        if self.tasks[index].timer.isOverdue {
+            self.tasks[index].timer.remainingTimeInSecs = Double(minutes.rawValue) * 60
+        } else {
+            self.tasks[index].timer.remainingTimeInSecs += Double(minutes.rawValue) * 60
+        }
     }
     
     mutating func importDefaultTasks() {
@@ -121,7 +129,7 @@ struct TasksData {
     
     mutating func importOverdueTasks() {
         let tasks: [Task] = [
-            Task(title: "Arrive home/unwind", timer: TimeTracked(hours: 0, minute: 0, timerState: TimerState.exceeded(30))),
+            Task(title: "Arrive home/unwind", timer: TimeTracked(hours: 0, minute: 0, remaningTime: 10)),
             Task(title: "Quick snack", timer: TimeTracked(hours: 0, minute: 10)),
             Task(title: "Complete CS 340 homework", timer: TimeTracked(hours: 1, minute: 0)),
             Task(title: "Break/exercise", timer: TimeTracked(hours: 0, minute: 15)),

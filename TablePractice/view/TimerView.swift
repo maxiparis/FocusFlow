@@ -12,8 +12,6 @@ struct TimerView: View {
     
     @StateObject var timerVM: TimerViewModel
     var parentVM: TasksViewModel
-    @Environment(\.scenePhase) var scenePhase
-
     
     var body: some View {
         VStack(spacing: 60) {
@@ -58,7 +56,7 @@ struct TimerView: View {
                 Button {
                     withAnimation(.easeInOut(duration: 0.25)) {
                         timerVM.completeTask()
-                        timerVM.cancelNotifications(for: timerVM.currentTask) // Cancel notifications when the task is completed
+//                        timerVM.cancelNotifications(for: timerVM.currentTask) // Cancel notifications when the task is completed
                     }
                 } label: {
                     ButtonImageView(systemImage: "checkmark.circle")
@@ -68,7 +66,7 @@ struct TimerView: View {
                 Button {
                     if (timerVM.timerPaused) {
                         timerVM.startTimer()
-                        timerVM.scheduleExpirationNotifications(for: timerVM.currentTask) // Schedule notifications when the timer starts
+//                        timerVM.scheduleExpirationNotifications(for: timerVM.currentTask) // Schedule notifications when the timer starts
                     } else {
                         timerVM.pauseTimer()
                     }
@@ -99,31 +97,12 @@ struct TimerView: View {
             }
             
             VStack {
-                switch(timerVM.sessionTimerState) {
-                case .exceeded:
-                    Text("Time Exceeded:")
-                case .saved:
-                    Text("Time Saved:")
-                }
+                Text("Time \(timerVM.sessionTimerState >= 0 ? "Saved" : "Exceeded"):")
                 Text(timerVM.sessionTimerStateText)
             }
             
             Spacer()
         }
-        
-        //MARK: - Scenes
-        
-        .onChange(of: scenePhase, { oldValue, newValue in
-            if newValue == .active {
-                print(newValue)
-                timerVM.recalculateTimer()
-            } else if newValue == .inactive {
-                print(newValue)
-            } else { //background
-                print(newValue)
-                timerVM.saveBackgroundDate()
-            }
-        })
         .onAppear() {
             requestNotificationPermission() // Request notification permission on view load
             timerVM.startTimer()
