@@ -47,6 +47,10 @@ class TasksViewModel: ObservableObject {
     
     //MARK: - User Intents
     
+    func importOverdueTasks() {
+        model.importOverdueTasks()
+    }
+    
     func importDefaultTasks() {
         model.importDefaultTasks()
     }

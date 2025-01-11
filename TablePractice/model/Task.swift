@@ -34,10 +34,21 @@ struct TimeTracked: Decodable, Encodable {
     
     var hours: Int
     var minute: Int
-    var remainingTimeInSecs: TimeInterval
+    var originalHoursAndMinutesAsSeconds: TimeInterval {
+        TimeInterval((hours * 60 * 60) + (minute * 60))
+    }
+    var taskStarted: Bool {
+        originalHoursAndMinutesAsSeconds != remainingTimeInSecs
+    }
+    var remainingTimeInSecs: TimeInterval {
+        didSet {
+            remainingTimeInSecs.round(.toNearestOrAwayFromZero)
+            print("Remaining time in secs: \(remainingTimeInSecs)")
+        }
+    }
     var timerState: TimerState? //if this is nil, it means we haven't started this task
     var isOverdue: Bool {
-        remainingTimeInSecs == 0
+        remainingTimeInSecs <= 0
     }
     var dueDate: Date? {
         if isOverdue {
@@ -47,10 +58,17 @@ struct TimeTracked: Decodable, Encodable {
         }
     }
     
-    init(hours: Int, minute: Int) {
+    init(hours: Int, minute: Int, timerState: TimerState? = nil) {
         self.hours = hours
         self.minute = minute
+        self.timerState = timerState
         self.remainingTimeInSecs = TimeInterval((hours * 60 * 60) + (minute * 60))
+    }
+    
+    init(hours: Int, minute: Int, remaningTime: TimeInterval) {
+        self.hours = hours
+        self.minute = minute
+        self.remainingTimeInSecs = remaningTime
     }
 }
 

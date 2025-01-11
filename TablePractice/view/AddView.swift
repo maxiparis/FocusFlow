@@ -68,7 +68,7 @@ struct AddView: View {
                             Text("Hours").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedHour) {
-                                ForEach(hoursMinutesData.hours.indices) {
+                                ForEach(hoursMinutesData.hours.indices, id: \.self) {
                                     Text(hoursMinutesData.hours[$0].description)
                                         .tag($0)
                                 }
@@ -82,7 +82,7 @@ struct AddView: View {
                             Text("Minutes").font(.headline)
                             Picker("Flavor",
                                    selection: $selectedMinute) {
-                                ForEach(hoursMinutesData.minutes.indices) {
+                                ForEach(hoursMinutesData.minutes.indices, id: \.self) {
                                     Text(hoursMinutesData.minutes[$0].description)
                                         .tag($0)
                                 }
